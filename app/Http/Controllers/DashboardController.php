@@ -10,6 +10,11 @@ class DashboardController extends Controller
     //
     public function index()
     {
+        return Inertia::render('Dashboard');
+    }
+
+    public function home()
+    {
         return Inertia::render('Home');
     }
 }
