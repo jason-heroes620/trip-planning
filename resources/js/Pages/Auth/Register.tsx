@@ -1,45 +1,149 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
+import InputError from '@/components/InputError';
+import InputLabel from '@/components/InputLabel';
+import PrimaryButton from '@/components/PrimaryButton';
 import SelectInput from '@/components/SelectInput';
-import States from '@/Components/states.json';
-import TextInput from '@/Components/TextInput';
+import States from '@/components/states.json';
+import TextInput from '@/components/TextInput';
+import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { useToast } from '@/hooks/use-toast';
 import GuestLayout from '@/Layouts/GuestLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { Head, Link, router, useForm } from '@inertiajs/react';
+import { FormEventHandler, useState } from 'react';
 
 const options = States.sort((a, b) => (a > b ? 1 : -1)).map((s) => {
     return { label: s, value: s };
 });
-export default function Register() {
-    const { data, setData, post, processing, errors, reset } = useForm({
-        school_name: '',
-        address_1: '',
-        address_2: '',
-        address_3: '',
-        city: '',
-        postcode: '',
-        state: '',
-        contact_person: '',
-        contact_no: '',
-        mobile_no: '',
-        email: '',
-    });
 
+type SchoolRegistration = {
+    school_name: string;
+    address_1: string;
+    address_2: string;
+    address_3: string;
+    city: string;
+    postcode: string;
+    state: string;
+    contact_person: string;
+    contact_no: string;
+    mobile_no: string;
+    email: string;
+    school_logo: any[];
+};
+export default function Register() {
+    const { toast } = useToast();
+    const { data, setData, post, processing, errors, progress, reset } =
+        useForm<SchoolRegistration>({
+            school_name: '',
+            address_1: '',
+            address_2: '',
+            address_3: '',
+            city: '',
+            postcode: '',
+            state: '',
+            contact_person: '',
+            contact_no: '',
+            mobile_no: '',
+            email: '',
+            school_logo: [],
+        });
+
+    const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files: File[] = Array.from(e.target.files || []);
+
+        var canUpload = true;
+        files.map((f: File) => {
+            f.size > 2097152 ? (canUpload = false) : '';
+        });
+        if (canUpload) {
+            setData('school_logo', [...(e.target.files || [])]);
+        } else {
+            alert('Your file exceede the upload limit.');
+        }
+    };
+
+    const [openSuccess, setSuccessOpen] = useState(false);
+    const [openError, setErrorOpen] = useState(false);
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
         post(route('school.register'), {
-            // onFinish: () => reset(),
+            forceFormData: true,
+            preserveState: true,
+            onSuccess: () => {
+                setSuccessOpen(true);
+                reset();
+                // route('home');
+            },
+            onError: () => {
+                toast({
+                    variant: 'destructive',
+                    description:
+                        'There was an issue with your registration. Please try again.',
+                });
+            },
         });
     };
 
+    const handleRoute = () => {
+        router.visit('/');
+    };
     return (
         <GuestLayout>
             <Head title="Register" />
             <div className="py-2 text-center">
-                <span className="text-bold">School Registration Form</span>
+                <span className="text-bold">Registration Form</span>
             </div>
+            <Dialog open={openSuccess}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle></DialogTitle>
+                        <DialogDescription>
+                            Thank you for registering your interest with us. You
+                            will receive a confirmation email from us and we
+                            will get back to you in 3 - 5 days.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2"></div>
+                    <DialogFooter className="justify-end">
+                        <DialogClose asChild>
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => handleRoute()}
+                            >
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+
+            <Dialog open={openError}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle></DialogTitle>
+                        <DialogDescription>
+                            There was an issue with your registration.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex items-center space-x-2"></div>
+                    <DialogFooter className="justify-end">
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Close
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
             <form onSubmit={submit}>
                 <div>
                     <div className="flex flex-row gap-2">
@@ -252,6 +356,23 @@ export default function Register() {
                     />
 
                     <InputError message={errors.email} className="mt-2" />
+                </div>
+                <div className="py-4">
+                    <InputLabel
+                        htmlFor="school_logo"
+                        value="School Logo (.png, .jpg)"
+                        className="pb-2"
+                    />
+                    <input
+                        type="file"
+                        accept=".png,.jpg,.jpeg"
+                        onChange={(e) => handleUploadImage(e)}
+                    />
+                    {progress && (
+                        <progress value={progress.percentage} max="100">
+                            {progress.percentage}%
+                        </progress>
+                    )}
                 </div>
 
                 <div className="mt-4 flex items-center justify-end">

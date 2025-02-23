@@ -1,19 +1,18 @@
-import UserLayout from "@/layout/UserLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Table from "@/components/table/Table";
-import Pagination from "@/components/pagination";
-import { Trash2 } from "lucide-react";
-import moment from "moment";
-import { usePage } from "@inertiajs/react";
+import Pagination from '@/components/pagination';
+import Table from '@/components/table/Table';
+import UserLayout from '@/layout/UserLayout';
+import { formattedNumber } from '@/util/formatNumber';
+import { Trash2 } from 'lucide-react';
+import moment from 'moment';
 
 const Invoices = ({ invoices }: any) => {
-    const { data, links } = usePage<{}>().props;
+    const { data, links } = invoices;
 
     return (
         <UserLayout>
-            <div className="px-8 py-4">
-                <div>
-                    <div>Invoices</div>
+            <div className="px-8 py-4 md:px-20 lg:px-40">
+                <div className="py-4">
+                    <span className="text-lg font-bold">Invoices</span>
                 </div>
                 <div className="py-4">
                     {/* <Tabs defaultValue="new" className="">
@@ -33,11 +32,11 @@ const Invoices = ({ invoices }: any) => {
                     <Table
                         columns={[
                             {
-                                label: "Invoice No.",
-                                name: "invoiceNo",
+                                label: 'Invoice No.',
+                                name: 'invoiceNo',
                                 renderCell: (row: any) => (
                                     <>
-                                        <>{row.product_name}</>
+                                        <>{row.invoice_no}</>
                                         {row.deleted_at && (
                                             <Trash2
                                                 size={16}
@@ -49,42 +48,52 @@ const Invoices = ({ invoices }: any) => {
                             },
 
                             {
-                                label: "Invoice Date",
-                                name: "date",
+                                label: 'Invoice Date',
+                                name: 'date',
 
                                 renderCell: (row) => (
                                     <>
                                         <>
                                             {moment(row.created).format(
-                                                "DD/MM/YYYY HH:mm"
+                                                'DD/MM/YYYY',
                                             )}
                                         </>
                                     </>
                                 ),
                             },
                             {
-                                label: "Amount (RM)",
-                                name: "amount",
+                                label: 'Amount (RM)',
+                                name: 'amount',
 
                                 renderCell: (row) => (
                                     <>
-                                        <>{row.amount}</>
+                                        <>
+                                            {formattedNumber(
+                                                row.invoice_amount,
+                                            )}
+                                        </>
                                     </>
                                 ),
                             },
                             {
-                                label: "Status",
-                                name: "status",
+                                label: 'Status',
+                                name: 'status',
                                 renderCell: (row) => (
                                     <>
-                                        <>{row.status}</>
+                                        <span className="text-sm">
+                                            {row.invoice_status === 0
+                                                ? 'PAID'
+                                                : row.invoice_status === 1
+                                                  ? 'UNPAID'
+                                                  : 'CANCELLED'}
+                                        </span>
                                     </>
                                 ),
                             },
                         ]}
                         rows={data}
                         getRowDetailsUrl={(row) =>
-                            route("product.view", row.id)
+                            route('invoice.view', row.invoice_id)
                         }
                     />
                     <Pagination links={links} />

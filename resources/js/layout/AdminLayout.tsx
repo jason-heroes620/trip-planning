@@ -1,32 +1,30 @@
-import React from "react";
-import {
-    SidebarProvider,
-    SidebarTrigger,
-    SidebarInset,
-} from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
-import Cookies from "js-cookie";
+import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import {
     NavigationMenu,
     NavigationMenuContent,
     NavigationMenuItem,
-    NavigationMenuLink,
     NavigationMenuList,
     NavigationMenuTrigger,
-    navigationMenuTriggerStyle,
-} from "@/components/ui/navigation-menu";
+} from '@/components/ui/navigation-menu';
+import {
+    SidebarInset,
+    SidebarProvider,
+    SidebarTrigger,
+} from '@/components/ui/sidebar';
+import Cookies from 'js-cookie';
+import React from 'react';
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
-    const defaultOpen = Cookies.get("sidebar:state") ? true : false;
+    const defaultOpen = Cookies.get('sidebar:state') ? true : false;
 
     return (
         <div>
             <SidebarProvider
                 defaultOpen={defaultOpen}
-                style={{
-                    "--sidebar-width": "10rem",
-                    "--sidebar-width-mobile": "10rem",
-                }}
+                // style={{
+                //     '--sidebar-width': '10rem',
+                //     '--sidebar-width-mobile': '10rem',
+                // }}
             >
                 <AppSidebar />
                 <SidebarInset>
@@ -40,7 +38,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
                                             <NavigationMenuTrigger>
                                                 Item One
                                             </NavigationMenuTrigger>
-                                            <NavigationMenuContent className="absolute z-50  ltr:origin-top-right rtl:origin-top-left">
+                                            <NavigationMenuContent className="absolute z-50 ltr:origin-top-right rtl:origin-top-left">
                                                 <ul className="">
                                                     <li>
                                                         <a href="/logout">

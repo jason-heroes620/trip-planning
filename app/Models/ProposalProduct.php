@@ -10,9 +10,9 @@ class ProposalProduct extends Model
     protected $primaryKey = 'proposal_product_id';
 
     protected $fillable = [
-        'uom',
-        'prouct_qty',
-        'unit_price',
-        'sales_tax',
+        'proposal_id',
+        'product_id',
     ];
+
+    public $timestamps = false;
 }

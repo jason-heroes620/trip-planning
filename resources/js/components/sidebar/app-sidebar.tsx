@@ -8,6 +8,7 @@ import {
     SidebarContent,
     SidebarGroup,
     SidebarGroupContent,
+    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
@@ -34,16 +35,63 @@ export function AppSidebar() {
                                 <SidebarMenuButton asChild>
                                     <Link href={'/dashboard'}>
                                         <LayoutDashboard />
-                                        <span>{'Dashboard'}</span>
+                                        Dashboard
                                     </Link>
                                 </SidebarMenuButton>
                             </SidebarMenuItem>
-                            <SidebarMenuItem>
+
+                            <SidebarMenuItem key={'trips'}>
                                 <Collapsible
                                     defaultOpen
                                     className="group/collapsible"
                                 >
-                                    <SidebarMenuItem>
+                                    <SidebarGroupLabel asChild>
+                                        <CollapsibleTrigger asChild>
+                                            <SidebarMenuButton>
+                                                <Bus />
+                                                <span className="text-md">
+                                                    Trips
+                                                </span>
+                                                <ChevronDown />
+                                            </SidebarMenuButton>
+                                        </CollapsibleTrigger>
+                                    </SidebarGroupLabel>
+                                    <CollapsibleContent>
+                                        <CollapsibleContent>
+                                            <SidebarMenuSub>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        key={'Locations'}
+                                                    >
+                                                        <Link
+                                                            href={'/locations'}
+                                                        >
+                                                            <span>
+                                                                {'Locations'}
+                                                            </span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                                <SidebarMenuSubItem>
+                                                    <SidebarMenuSubButton
+                                                        asChild
+                                                        key={'Proposals'}
+                                                    >
+                                                        <Link
+                                                            href={'/proposals'}
+                                                        >
+                                                            <span>
+                                                                {'Proposals'}
+                                                            </span>
+                                                        </Link>
+                                                    </SidebarMenuSubButton>
+                                                </SidebarMenuSubItem>
+                                            </SidebarMenuSub>
+                                        </CollapsibleContent>
+                                    </CollapsibleContent>
+
+                                    {/* <SidebarMenuItem>
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton>
                                                 <Bus />
@@ -83,56 +131,69 @@ export function AppSidebar() {
                                                 </SidebarMenuSubItem>
                                             </SidebarMenuSub>
                                         </CollapsibleContent>
-                                    </SidebarMenuItem>
+                                    </SidebarMenuItem> */}
                                 </Collapsible>
                             </SidebarMenuItem>
 
-                            <SidebarMenuItem>
+                            <SidebarMenuItem key={'billing'}>
                                 <Collapsible
                                     defaultOpen
                                     className="group/collapsible"
                                 >
-                                    <SidebarMenuItem>
+                                    <SidebarGroupLabel asChild>
                                         <CollapsibleTrigger asChild>
                                             <SidebarMenuButton>
                                                 <Receipt />
-                                                Billing
+                                                <span className="text-md">
+                                                    Billing
+                                                </span>
                                                 <ChevronDown />
                                             </SidebarMenuButton>
                                         </CollapsibleTrigger>
-                                        <CollapsibleContent>
-                                            <SidebarMenuSub>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton
-                                                        asChild
-                                                        key={'quotations'}
-                                                    >
-                                                        <Link
-                                                            href={'/quotations'}
-                                                        >
-                                                            <span>
-                                                                {'Quotations'}
-                                                            </span>
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton
-                                                        asChild
-                                                        key={'invoices'}
-                                                    >
-                                                        <Link
-                                                            href={'/invoices'}
-                                                        >
-                                                            <span>
-                                                                {'Invoices'}
-                                                            </span>
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            </SidebarMenuSub>
-                                        </CollapsibleContent>
-                                    </SidebarMenuItem>
+                                    </SidebarGroupLabel>
+                                    {/* <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton>
+                                            <Receipt />
+                                            Billing
+                                            <ChevronDown />
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger> */}
+                                    <CollapsibleContent>
+                                        <SidebarMenuSub>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton
+                                                    asChild
+                                                    key={'quotations'}
+                                                >
+                                                    <Link href={'/quotations'}>
+                                                        Quotations
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton
+                                                    asChild
+                                                    key={'orders'}
+                                                >
+                                                    <Link href={'/orders'}>
+                                                        Orders
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                            <SidebarMenuSubItem>
+                                                <SidebarMenuSubButton
+                                                    asChild
+                                                    key={'invoices'}
+                                                >
+                                                    <Link href={'/invoices'}>
+                                                        <span>
+                                                            {'Invoices'}
+                                                        </span>
+                                                    </Link>
+                                                </SidebarMenuSubButton>
+                                            </SidebarMenuSubItem>
+                                        </SidebarMenuSub>
+                                    </CollapsibleContent>
                                 </Collapsible>
                             </SidebarMenuItem>
                         </SidebarMenu>

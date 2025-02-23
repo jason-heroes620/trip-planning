@@ -16,13 +16,13 @@ const ProductCarousel = ({ products }: any) => {
 
     return (
         <Carousel
-            className="w-[80%] max-w-xs px-2 md:w-[70%] md:max-w-5xl lg:w-full lg:max-w-7xl"
+            className="w-[80%] max-w-xs px-2 md:w-[90%] md:max-w-5xl lg:w-full lg:max-w-7xl"
             plugins={[plugin.current]}
         >
             <CarouselContent className="-ml-1">
-                {products.map((p) => (
+                {products.map((p: any) => (
                     <CarouselItem
-                        className="md:basis-1/3 md:pl-6 lg:basis-1/4"
+                        className="md:basis-1/2 md:pl-6 lg:basis-1/4"
                         key={p.id}
                     >
                         <Link href={route('location.view', p.id)}>
@@ -32,24 +32,31 @@ const ProductCarousel = ({ products }: any) => {
                                         <img
                                             src={p.url}
                                             alt=""
-                                            className="flex h-[180px] justify-center object-cover py-2"
-                                            width={'auto'}
+                                            className="max-h-[180px] min-h-[180px] rounded-t-lg object-cover"
+                                            width="auto"
                                             height={'auto'}
                                         />
-                                        <div className="flex h-[120px] flex-col py-2">
-                                            <div>
-                                                <span>{p.product_name}</span>
+                                        <div className="px-4">
+                                            <div className="flex h-[120px] flex-col py-2">
+                                                <div>
+                                                    <span>
+                                                        {p.product_name}
+                                                    </span>
+                                                </div>
+                                                <div className="flex flex-row items-center gap-1">
+                                                    <MapPin
+                                                        size={14}
+                                                        color="red"
+                                                    />
+                                                    <small>{p.location}</small>
+                                                </div>
                                             </div>
-                                            <div className="flex flex-row items-center gap-1">
-                                                <MapPin size={14} color="red" />
-                                                <small>{p.location}</small>
-                                            </div>
-                                        </div>
-                                        <div className="flex h-[50px] items-center justify-end">
-                                            <div className="">
-                                                <span className="text-lg font-bold">
-                                                    RM{p.price}
-                                                </span>
+                                            <div className="flex items-center justify-end">
+                                                <div className="">
+                                                    <span className="text-lg font-bold">
+                                                        RM{p.child_price}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

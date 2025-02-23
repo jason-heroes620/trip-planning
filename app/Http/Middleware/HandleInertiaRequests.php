@@ -34,6 +34,13 @@ class HandleInertiaRequests extends Middleware
             'auth' => [
                 'user' => $request->user(),
             ],
+            'previousUrl' => function () use ($request) {
+                // Store the previous URL only for GET requests and avoid login/logout routes
+                if ($request->method() === 'GET' && !$request->is('login', 'logout')) {
+                    return url()->previous();
+                }
+                return null;
+            },
         ];
     }
 }

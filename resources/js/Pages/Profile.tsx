@@ -1,8 +1,7 @@
-import ProfileForm from "@/components/profile";
-import UserLayout from "@/layout/UserLayout";
-import React from "react";
+import ProfileForm from '@/components/profile';
+import UserLayout from '@/layout/UserLayout';
 
-const Profile = ({ auth }) => {
+const Profile = ({ auth }: any) => {
     return (
         <UserLayout>
             <div className="px-4 py-4">

@@ -13,8 +13,12 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $newProducts = Location::where('status', 0)->orderBy('created', 'asc')->take(5)->get();
-        $products = Location::where('status', 0)->orderBy('created', 'asc')->paginate(10);
+        $newProducts = Location::where('status', 0)->orderBy('created', 'desc')->take(5)->get();
+        $product_ids = [];
+        foreach ($newProducts as $p) {
+            array_push($product_ids, $p['id']);
+        }
+        $products = Location::where('status', 0)->whereNotIn('id', $product_ids)->orderBy('created', 'desc')->paginate(12);
 
         foreach ($products as $product) {
             $product['url'] = $this->getImage($product['product_image']);
@@ -35,18 +39,22 @@ class LocationController extends Controller
         $product_detail = LocationDetail::where('product_id', $req->id)->first();
         $product_images = LocationImages::where('product_id', $req->id)->get();
 
-        return Inertia::render('LocationView', [
+        foreach ($product_images as $i) {
+            $i['url'] = $this->getImage($i['image_path']);
+        }
+
+        return Inertia::render('Location', [
             'product' => $product,
-            'product_detail' => $product_detail,
-            'product_images' => $product_images,
+            'productDetail' => $product_detail,
+            'productImages' => $product_images,
         ]);
     }
 
-    private function getImage($product)
+    public function getImage($product)
     {
-        if (!empty($product)) {
+        if ($product) {
             $file_name = explode('/', $product);
-            $image = "http://localhost:8001/" . 'storage/productImages/' . $file_name[sizeof($file_name) - 1];
+            $image = "http://localhost:8000/storage/productImages/" . $file_name[sizeof($file_name) - 1];
             return $image;
         }
         return;

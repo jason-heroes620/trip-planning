@@ -1,4 +1,3 @@
-import * as React from "react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -10,21 +9,19 @@ import {
     getPaginationRowModel,
     getSortedRowModel,
     useReactTable,
-} from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+} from '@tanstack/react-table';
+import { ArrowUpDown, ChevronDown, MoreHorizontal } from 'lucide-react';
+import * as React from 'react';
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuLabel,
-    DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/dropdown-menu';
 import {
     Table,
     TableBody,
@@ -32,147 +29,19 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import moment from "moment";
+} from '@/components/ui/table';
+import { Quotation } from '@/types';
+import moment from 'moment';
 
-/*
-id hidden
-quotation no.
-quotation date
-estimated amount
-*** click for detail
-*/
-const data: Payment[] = [
+export const columns: ColumnDef<Quotation>[] = [
     {
-        id: "1",
-        amount: 316,
-        status: "pending",
-        quotationNo: "Q123",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "pending",
-        quotationNo: "Q124",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "pending",
-        quotationNo: "Q125",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "pending",
-        quotationNo: "Q126",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "pending",
-        quotationNo: "Q127",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "2",
-        amount: 21,
-        status: "pending",
-        quotationNo: "Q128",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "1",
-        amount: 316,
-        status: "pending",
-        quotationNo: "Q123",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "3u1reuv4",
-        amount: 242,
-        status: "pending",
-        quotationNo: "Q124",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "derv1ws0",
-        amount: 837,
-        status: "pending",
-        quotationNo: "Q125",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "5kma53ae",
-        amount: 874,
-        status: "pending",
-        quotationNo: "Q126",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "bhqecj4p",
-        amount: 721,
-        status: "pending",
-        quotationNo: "Q127",
-        quotationDate: "2024-01-01",
-    },
-    {
-        id: "2",
-        amount: 21,
-        status: "pending",
-        quotationNo: "Q128",
-        quotationDate: "2024-01-01",
-    },
-];
-
-export type Payment = {
-    id: string;
-    amount: number;
-    status: "pending" | "processing" | "invoiced" | "archived";
-    quotationNo: string;
-    quotationDate: string;
-};
-
-export const columns: ColumnDef<Payment>[] = [
-    // {
-    //     // id: "select",
-    //     // header: ({ table }) => (
-    //     //     <Checkbox
-    //     //         checked={
-    //     //             table.getIsAllPageRowsSelected() ||
-    //     //             (table.getIsSomePageRowsSelected() && "indeterminate")
-    //     //         }
-    //     //         onCheckedChange={(value) =>
-    //     //             table.toggleAllPageRowsSelected(!!value)
-    //     //         }
-    //     //         aria-label="Select all"
-    //     //     />
-    //     // ),
-    //     header: "",
-    //     cell: ({ row }) => (
-    //         // <Checkbox
-    //         //     checked={row.getIsSelected()}
-    //         //     onCheckedChange={(value) => row.toggleSelected(!!value)}
-    //         //     aria-label="Select row"
-    //         // />
-    //         <div>{row.getValue("id")}</div>
-    //     ),
-    //     enableSorting: false,
-    //     enableHiding: false,
-    // },
-
-    {
-        accessorKey: "quotationNo",
+        accessorKey: 'quotation_no',
         header: ({ column }) => {
             return (
                 <Button
                     variant="ghost"
                     onClick={() =>
-                        column.toggleSorting(column.getIsSorted() === "asc")
+                        column.toggleSorting(column.getIsSorted() === 'asc')
                     }
                 >
                     Quotation No.
@@ -181,47 +50,64 @@ export const columns: ColumnDef<Payment>[] = [
             );
         },
         cell: ({ row }) => (
-            <div className="lowercase">{row.getValue("quotationNo")}</div>
+            <div className="">{row.getValue('quotation_no')}</div>
         ),
     },
     {
-        accessorKey: "quotationDate",
+        accessorKey: 'quotation_date',
         header: () => <div className="">Date</div>,
         cell: ({ row }) => {
-            const quotationDate = moment(row.getValue("quotationDate")).format(
-                "DD/MM/YYYY"
+            const quotationDate = moment(row.getValue('quotation_date')).format(
+                'DD/MM/YYYY',
             );
             return <div className="">{quotationDate}</div>;
         },
     },
     {
-        accessorKey: "amount",
+        accessorKey: 'school_name',
+        header: () => <div className="">School</div>,
+        cell: ({ row }) => {
+            return <div className="">{row.getValue('school_name')}</div>;
+        },
+    },
+    {
+        accessorKey: 'amount',
         header: () => <div className="text-right">Amount</div>,
         cell: ({ row }) => {
-            const amount = parseFloat(row.getValue("amount"));
+            const amount = parseFloat(row.getValue('amount'));
 
             // Format the amount as a dollar amount
-            const formatted = new Intl.NumberFormat("en-MY", {
-                style: "currency",
-                currency: "MYR",
+            const formatted = new Intl.NumberFormat('en-MY', {
+                style: 'currency',
+                currency: 'MYR',
             }).format(amount);
 
             return <div className="text-right font-medium">{formatted}</div>;
         },
     },
     {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: 'quotation_status',
+        header: 'Status',
         cell: ({ row }) => (
-            <div className="capitalize">{row.getValue("status")}</div>
+            <div className="capitalize">
+                {row.getValue('quotation_status') === 0
+                    ? 'New'
+                    : row.getValue('quotation_status') === 1
+                      ? 'Quotation Updated'
+                      : row.getValue('quotation_status') === 2
+                        ? 'Invoice Issues'
+                        : row.getValue('quotation_status') === 4
+                          ? 'Payment Made'
+                          : ''}
+            </div>
         ),
     },
     {
-        id: "actions",
+        id: 'actions',
         enableHiding: false,
         cell: ({ row }) => {
-            const payment = row.original;
-
+            const quot = row.original;
+            console.log(quot.quotation_id);
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -240,7 +126,14 @@ export const columns: ColumnDef<Payment>[] = [
                             Copy payment ID
                         </DropdownMenuItem>
                         <DropdownMenuSeparator /> */}
-                        <DropdownMenuItem>View Detail</DropdownMenuItem>
+                        <DropdownMenuItem
+                            onClick={() => {
+                                console.log('pressed');
+                                route('quotation.view', quot.quotation_id);
+                            }}
+                        >
+                            View
+                        </DropdownMenuItem>
                         <DropdownMenuItem>Archive</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
@@ -249,7 +142,9 @@ export const columns: ColumnDef<Payment>[] = [
     },
 ];
 
-const QuotationTable = () => {
+const QuotationTable = ({ quotations }: any) => {
+    const { data, link } = quotations;
+
     const [sorting, setSorting] = React.useState<SortingState>([]);
     const [columnFilters, setColumnFilters] =
         React.useState<ColumnFiltersState>([]);
@@ -333,7 +228,7 @@ const QuotationTable = () => {
                                                 : flexRender(
                                                       header.column.columnDef
                                                           .header,
-                                                      header.getContext()
+                                                      header.getContext(),
                                                   )}
                                         </TableHead>
                                     );
@@ -347,14 +242,14 @@ const QuotationTable = () => {
                                 <TableRow
                                     key={row.id}
                                     data-state={
-                                        row.getIsSelected() && "selected"
+                                        row.getIsSelected() && 'selected'
                                     }
                                 >
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell key={cell.id}>
                                             {flexRender(
                                                 cell.column.columnDef.cell,
-                                                cell.getContext()
+                                                cell.getContext(),
                                             )}
                                         </TableCell>
                                     ))}
@@ -374,7 +269,7 @@ const QuotationTable = () => {
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="flex-1 text-sm text-muted-foreground">
+                <div className="text-muted-foreground flex-1 text-sm">
                     {/* {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected. */}
                 </div>

@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
 class School extends Model
 {
+    use HasUuids;
+
     protected $primaryKey = 'school_id';
     protected $table = 'school';
     protected $fillable = [
@@ -21,5 +24,7 @@ class School extends Model
         'contact_no',
         'mobile_no',
         'email',
+        'school_logo',
+        'google_map_location',
     ];
 }
