@@ -54,7 +54,7 @@ class LocationController extends Controller
     {
         if ($product) {
             $file_name = explode('/', $product);
-            $image = "http://localhost:8000/storage/productImages/" . $file_name[sizeof($file_name) - 1];
+            $image = config('custom.merchant_host') . "storage/productImages/" . $file_name[sizeof($file_name) - 1];
             return $image;
         }
         return;
