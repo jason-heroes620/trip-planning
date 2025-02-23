@@ -16,6 +16,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -25,6 +26,10 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
+Route::get('/storage-link', function () {
+    Artisan::call('storage:link');
+    return "All config cleared";
+});
 
 Route::get('/register', [SchoolController::class, 'create'])->name('school.create');
 Route::post('/register', [SchoolController::class, 'register'])->name('school.register');
