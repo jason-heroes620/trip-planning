@@ -279,7 +279,7 @@ class ProposalController extends Controller
     {
         if ($item) {
             $file_name = explode('/', $item);
-            $image = "http://localhost:8001/storage/food/" . $file_name[sizeof($file_name) - 1];
+            $image = config('custom.merchant_host') . "storage/food/" . $file_name[sizeof($file_name) - 1];
             return $image;
         }
         return;

@@ -187,7 +187,7 @@ class OrderController extends Controller
         }
 
         // print_r($order);
-        $domain = "http://localhost:8001/order/" . $order['order_id'];
+        $domain = config('custom.trip_host') . "order/" . $order['order_id'];
         return redirect()->away($domain)->send();
     }
 
