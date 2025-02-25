@@ -199,7 +199,6 @@ const Invoice = ({
                         })}
 
                         {proposalItems.map((item: any, index: any) => {
-                            console.log(item);
                             return (
                                 <div className="flex flex-col py-4 md:grid md:grid-cols-6">
                                     <div className="flex md:col-span-3">

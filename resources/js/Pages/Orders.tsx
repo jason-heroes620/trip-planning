@@ -6,7 +6,7 @@ import moment from 'moment';
 
 const Orders = ({ orders }: { orders: any }) => {
     const { data, links } = orders;
-    console.log(data);
+
     return (
         <UserLayout>
             <div className="px-8 py-4 md:px-20 lg:px-40">

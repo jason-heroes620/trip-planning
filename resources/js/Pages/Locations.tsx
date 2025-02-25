@@ -9,7 +9,7 @@ const Locations = ({ newProducts, products }: any) => {
     const { data, links } = products;
     return (
         <UserLayout>
-            <div className="px-8 py-4 md:px-20 lg:px-40">
+            <div className="lg:px-30 px-8 py-4 md:px-20">
                 <div className="py-4">
                     <span className="text-lg font-bold">Locations</span>
                 </div>
@@ -34,7 +34,7 @@ const Locations = ({ newProducts, products }: any) => {
                             ></SearchInput> */}
                         </div>
                         <div className="py-6">
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {data.map((p: any, i: number) => (
                                     <Link
                                         href={route('location.view', p.id)}
@@ -46,12 +46,12 @@ const Locations = ({ newProducts, products }: any) => {
                                                     <img
                                                         src={p.url}
                                                         alt=""
-                                                        className="max-h-[180px] min-h-[180px] rounded-t-lg object-cover"
+                                                        className="max-h-[200px] min-h-[200px] rounded-t-lg object-cover"
                                                         width="auto"
                                                         height={'auto'}
                                                     />
                                                     <div className="px-4">
-                                                        <div className="flex h-[120px] flex-col py-2">
+                                                        <div className="flex h-[110px] flex-col py-2 pt-4">
                                                             <div>
                                                                 <span>
                                                                     {

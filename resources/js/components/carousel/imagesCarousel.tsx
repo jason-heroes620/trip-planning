@@ -11,7 +11,7 @@ import { useRef } from 'react';
 
 const ImagesCarousel = ({ images }: any) => {
     const plugin = useRef(Autoplay({ delay: 4000, stopOnInteraction: true }));
-    console.log(images);
+
     return (
         <Carousel
             className="w-full max-w-xs md:max-w-md"

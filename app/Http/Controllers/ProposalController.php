@@ -151,6 +151,7 @@ class ProposalController extends Controller
                 'proposal_date' => !empty($req->input('proposal_date')) ? date('Y-m-d', strtotime(str_replace('/', '-', $req->input('proposal_date')))) : null,
                 'qty_student' => $req->input('qty_student'),
                 'qty_teacher' => $req->input('qty_teacher'),
+                'special_request' => $req->input('special_request')
             ]);
 
             $proposal_product = ProposalProduct::where('proposal_id', $req->input('proposal_id'))->get();
@@ -320,7 +321,7 @@ class ProposalController extends Controller
             'content' => 'This is a dynamically generated PDF using Laravel DomPDF with Inertia.js.',
             'date' => date('d/M/Y', strtotime($proposal['proposal_date'])),
             'products' => $proposal_product,
-            'cost_per_student' => round($quotation['quotation_amount'] / ($proposal['qty_student'] + $proposal['qty_teacher'])),
+            'cost_per_student' => round(($quotation['quotation_amount'] + $proposal['additional_cost']) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
             'schoolLogo' => $schoolLogo,
             'images' => $product_images,
         ];
@@ -328,5 +329,22 @@ class ProposalController extends Controller
         $pdf = Pdf::loadView('pdf_invoice', $data)->setPaper('a4', 'potrait');
         // return $pdf->download('example.pdf'); // or use stream() to view it in the browser
         return $pdf->download('proposal.pdf'); // or use stream() to view it in the browser
+    }
+
+    public function addAdditionalCost(Request $req)
+    {
+        try {
+            Proposal::where('proposal_id', $req->id)->update([
+                'additional_cost' => $req->input('additional_cost')
+            ]);
+            $data['success'] = "Additional Cost Added.";
+
+            return response()->json($data);
+        } catch (Exceptions $e) {
+            Log::error("Error adding additional cost. " . $req->id . " " . $e);
+            $data['error'] = "Failed to add Additional Cost.";
+
+            return response()->json($data);
+        }
     }
 }

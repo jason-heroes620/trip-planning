@@ -53,7 +53,6 @@ const Proposal = ({ product }: any) => {
 
     const handleSelectProposal = (e: any) => {
         e.preventDefault();
-        console.log(selectedProposal);
         const data = {
             proposal_id: selectedProposal,
             product_id: product.id,
@@ -164,6 +163,7 @@ const Proposal = ({ product }: any) => {
                     </DialogHeader>
                     <div>
                         <Input
+                            placeholder="e.g. School - Month - Year"
                             onChange={(e) => setProposalName(e.target.value)}
                         ></Input>
                     </div>

@@ -1,10 +1,11 @@
 import InputError from '@/components/InputError';
 import InputLabel from '@/components/InputLabel';
+import PasswordInput from '@/components/PasswordInput';
 import PrimaryButton from '@/components/PrimaryButton';
 import TextInput from '@/components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 export default function ResetPassword({
     token,
@@ -28,6 +29,14 @@ export default function ResetPassword({
         });
     };
 
+    const [valid, setValid] = useState(false);
+
+    const handlePasswordChange = (password: string, isValid: boolean) => {
+        if (isValid) {
+            setValid(true);
+        }
+    };
+
     return (
         <GuestLayout>
             <Head title="Reset Password" />
@@ -49,7 +58,7 @@ export default function ResetPassword({
                     <InputError message={errors.email} className="mt-2" />
                 </div>
 
-                <div className="mt-4">
+                {/* <div className="mt-4">
                     <InputLabel htmlFor="password" value="Password" />
 
                     <TextInput
@@ -86,6 +95,17 @@ export default function ResetPassword({
                     <InputError
                         message={errors.password_confirmation}
                         className="mt-2"
+                    />
+                </div> */}
+
+                <div>
+                    <PasswordInput
+                        minLength={8}
+                        pattern={
+                            /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[@$!%*?&#]).*$/
+                        }
+                        onPasswordChange={handlePasswordChange}
+                        setData={setData}
                     />
                 </div>
 

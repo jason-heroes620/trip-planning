@@ -107,7 +107,6 @@ export const columns: ColumnDef<Quotation>[] = [
         enableHiding: false,
         cell: ({ row }) => {
             const quot = row.original;
-            console.log(quot.quotation_id);
             return (
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -128,7 +127,6 @@ export const columns: ColumnDef<Quotation>[] = [
                         <DropdownMenuSeparator /> */}
                         <DropdownMenuItem
                             onClick={() => {
-                                console.log('pressed');
                                 route('quotation.view', quot.quotation_id);
                             }}
                         >
@@ -269,7 +267,7 @@ const QuotationTable = ({ quotations }: any) => {
                 </Table>
             </div>
             <div className="flex items-center justify-end space-x-2 py-4">
-                <div className="text-muted-foreground flex-1 text-sm">
+                <div className="flex-1 text-sm text-muted-foreground">
                     {/* {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected. */}
                 </div>

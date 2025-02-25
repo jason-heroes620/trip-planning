@@ -85,7 +85,7 @@ const Quotation = ({
 
     const handleAcceptQuotation = (e: any) => {
         e.preventDefault();
-        // console.log('Accept Quotation');
+
         axios
             .patch(route('quotation.accept', quotation.quotation_id), {
                 quotation_amount: total,

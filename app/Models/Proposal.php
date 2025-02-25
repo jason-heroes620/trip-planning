@@ -18,7 +18,7 @@ class Proposal extends Model
         'proposal_name',
         'proposal_date',
         'quotation_id',
-        'additional_price',
+        'additional_cost',
         'qty_student',
         'qty_teacher',
         'travel_duration',
@@ -26,6 +26,7 @@ class Proposal extends Model
         'proposal_status',
         'proposal_version',
         'travel_duration',
-        'travel_distance'
+        'travel_distance',
+        'special_request',
     ];
 }

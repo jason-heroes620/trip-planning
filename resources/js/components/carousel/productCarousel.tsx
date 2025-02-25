@@ -32,12 +32,12 @@ const ProductCarousel = ({ products }: any) => {
                                         <img
                                             src={p.url}
                                             alt=""
-                                            className="max-h-[180px] min-h-[180px] rounded-t-lg object-cover"
+                                            className="max-h-[200px] min-h-[200px] rounded-t-lg object-cover"
                                             width="auto"
                                             height={'auto'}
                                         />
                                         <div className="px-4">
-                                            <div className="flex h-[120px] flex-col py-2">
+                                            <div className="flex h-[110px] flex-col py-2 pt-4">
                                                 <div>
                                                     <span>
                                                         {p.product_name}
