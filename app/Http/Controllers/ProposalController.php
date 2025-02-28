@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Fees;
 use App\Models\Item;
 use App\Models\Location;
+use App\Models\LocationDetail;
 use App\Models\LocationImages;
 use App\Models\Proposal;
 use App\Models\ProposalFees;
@@ -82,19 +83,28 @@ class ProposalController extends Controller
         $proposal = Proposal::where('proposal_id', $req->id)->first();
         $proposal_product = ProposalProduct::where('proposal_id', $req->id)->get();
 
+        $end_date = null;
         foreach ($proposal_product as $p) {
             $location = Location::where('id', $p['product_id'])->first();
             $p['location'] = $location;
             $p['url'] = (new LocationController)->getImage($location['product_image']);
+            $detail = LocationDetail::where('product_id', $location['id'])->first();
+
+            if ($end_date === null) {
+                $end_date = $detail['event_end_date'];
+            } else {
+                if ($end_date < $detail['event_end_date'])
+                    $end_date = $detail['event_end_date'];
+            }
         }
 
         $product_prices = ProposalProduct::leftJoin('proposal_product_price', 'proposal_product_price.proposal_product_id', 'proposal_product.proposal_product_id')->where('proposal_id', $req->id)->get();
 
-        if ($proposal["status"] > 0) {
-            $items = Item::where('item_status', 0)->get(["item_id", "item_name", "unit_price", "item_type", "uom", "additional_unit_cost", "item_image", "item_status"]);
-        } else {
-            $items = Item::get(["item_id", "item_name", "unit_price", "item_type", "uom", "additional_unit_cost", "item_image", "item_status", "item_description"]);
-        }
+        // if ($proposal["status"] > 0) {
+        // $items = Item::where('item_status', 0)->get(["item_id", "item_name", "unit_price", "item_type", "uom", "additional_unit_cost", "item_image", "item_status"]);
+        // } else {
+        $items = Item::where('item_status', 0)->get(["item_id", "item_name", "unit_price", "item_type", "uom", "additional_unit_cost", "item_image", "item_status", "item_description", "product_id"]);
+        // }
 
         foreach ($items as $item) {
             $item['url'] = $this->getImage($item['item_image']);
@@ -140,6 +150,7 @@ class ProposalController extends Controller
             'items' => $items,
             'proposal_item' => $proposal_item,
             'proposal_fees' => $proposal_fees,
+            'proposal_endDate' => $end_date,
         ]);
     }
 
@@ -163,7 +174,7 @@ class ProposalController extends Controller
                         'qty' => $req->input('qty_student')
                     ]);
                 ProposalProductPrice::where('proposal_product_id', $p['proposal_product_id'])
-                    ->where('attribute', 'adult')
+                    ->where('attribute', 'teacher')
                     ->update([
                         'qty' => $req->input('qty_teacher')
                     ]);
@@ -202,7 +213,7 @@ class ProposalController extends Controller
                 'product_id' => $req->input('product_id'),
             ]);
 
-            $price = Location::select(["adult_price", "child_price"])->where('id', $req->input('product_id'))->first();
+            $price = Location::select(["teacher_price", "child_price"])->where('id', $req->input('product_id'))->first();
 
             ProposalProductPrice::create([
                 'proposal_product_id' => $proposal_product['proposal_product_id'],
@@ -216,8 +227,8 @@ class ProposalController extends Controller
             ProposalProductPrice::create([
                 'proposal_product_id' => $proposal_product['proposal_product_id'],
                 'uom' => 'pax',
-                'unit_price' => $price["adult_price"],
-                'attribute' => 'adult',
+                'unit_price' => $price["teacher_price"],
+                'attribute' => 'teacher',
                 'qty' => 1,
                 'sales_tax' => 0.00
             ]);
@@ -321,7 +332,7 @@ class ProposalController extends Controller
             'content' => 'This is a dynamically generated PDF using Laravel DomPDF with Inertia.js.',
             'date' => date('d/M/Y', strtotime($proposal['proposal_date'])),
             'products' => $proposal_product,
-            'cost_per_student' => round(($quotation['quotation_amount'] + $proposal['additional_cost']) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
+            'cost_per_student' => round(($quotation['quotation_amount'] + ($proposal['markup_per_student'] * $proposal['qty_student'])) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
             'schoolLogo' => $schoolLogo,
             'images' => $product_images,
         ];
@@ -331,20 +342,42 @@ class ProposalController extends Controller
         return $pdf->download('proposal.pdf'); // or use stream() to view it in the browser
     }
 
-    public function addAdditionalCost(Request $req)
+    public function addMarkup(Request $req)
     {
         try {
             Proposal::where('proposal_id', $req->id)->update([
-                'additional_cost' => $req->input('additional_cost')
+                'markup_per_student' => $req->input('markup_per_student')
             ]);
-            $data['success'] = "Additional Cost Added.";
+            $data['success'] = "Markup Has Been Added.";
 
             return response()->json($data);
         } catch (Exceptions $e) {
-            Log::error("Error adding additional cost. " . $req->id . " " . $e);
-            $data['error'] = "Failed to add Additional Cost.";
+            Log::error("Error adding markup . " . $req->id . " " . $e);
+            $data['error'] = "Failed To Add Markup Per Student.";
 
             return response()->json($data);
         }
+    }
+
+    public function getDisabledDays(Request $req)
+    {
+        $proposal_products = ProposalProduct::where('proposal_id', $req->id)->get(['product_id']);
+        $data = [0, 6];
+        foreach ($proposal_products as $p) {
+            $detail = LocationDetail::where('product_id', $p['product_id'])->first();
+
+            if ($detail['monday_start_time'] === null)
+                array_push($data, 1);
+            if ($detail['tuesday_start_time'] === null)
+                array_push($data, 2);
+            if ($detail['wednesday_start_time'] === null)
+                array_push($data, 3);
+            if ($detail['thursday_start_time'] === null)
+                array_push($data, 4);
+            if ($detail['friday_start_time'] === null)
+                array_push($data, 5);
+        }
+
+        return response()->json(array_unique($data));
     }
 }

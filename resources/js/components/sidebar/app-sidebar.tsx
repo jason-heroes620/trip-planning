@@ -6,29 +6,27 @@ import {
 import {
     Sidebar,
     SidebarContent,
+    SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     SidebarMenuSub,
     SidebarMenuSubButton,
     SidebarMenuSubItem,
+    useSidebar,
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/react';
 import { Bus, ChevronDown, LayoutDashboard, Receipt } from 'lucide-react';
-import ApplicationLogo from '../logo';
 
 export function AppSidebar() {
+    const { state, isMobile } = useSidebar();
+
     return (
         <Sidebar side="left" collapsible="icon">
-            <SidebarContent>
+            <SidebarContent className="pt-4 md:pt-10">
                 <SidebarGroup>
-                    {/* <SidebarGroupLabel></SidebarGroupLabel> */}
-                    <div className="-top-10 flex justify-center">
-                        <ApplicationLogo size={80} />
-                    </div>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem key={'dashboard'}>
@@ -42,20 +40,19 @@ export function AppSidebar() {
 
                             <SidebarMenuItem key={'trips'}>
                                 <Collapsible
-                                    defaultOpen
                                     className="group/collapsible"
+                                    defaultOpen
                                 >
-                                    <SidebarGroupLabel asChild>
-                                        <CollapsibleTrigger asChild>
-                                            <SidebarMenuButton>
-                                                <Bus />
-                                                <span className="text-md">
-                                                    Trips
-                                                </span>
-                                                <ChevronDown />
-                                            </SidebarMenuButton>
-                                        </CollapsibleTrigger>
-                                    </SidebarGroupLabel>
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton>
+                                            <Bus />
+                                            <span className="text-md">
+                                                Trips
+                                            </span>
+                                            <ChevronDown />
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger>
+
                                     <CollapsibleContent>
                                         <CollapsibleContent>
                                             <SidebarMenuSub>
@@ -140,17 +137,15 @@ export function AppSidebar() {
                                     defaultOpen
                                     className="group/collapsible"
                                 >
-                                    <SidebarGroupLabel asChild>
-                                        <CollapsibleTrigger asChild>
-                                            <SidebarMenuButton>
-                                                <Receipt />
-                                                <span className="text-md">
-                                                    Billing
-                                                </span>
-                                                <ChevronDown />
-                                            </SidebarMenuButton>
-                                        </CollapsibleTrigger>
-                                    </SidebarGroupLabel>
+                                    <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton>
+                                            <Receipt />
+                                            <span className="text-md">
+                                                Billing
+                                            </span>
+                                            <ChevronDown />
+                                        </SidebarMenuButton>
+                                    </CollapsibleTrigger>
                                     {/* <CollapsibleTrigger asChild>
                                         <SidebarMenuButton>
                                             <Receipt />
@@ -200,6 +195,15 @@ export function AppSidebar() {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+            <SidebarFooter>
+                {state === 'expanded' && (
+                    <div className="flex justify-center">
+                        <span className="text-[10px]">
+                            Copyright &copy; HEROES Malaysia
+                        </span>
+                    </div>
+                )}
+            </SidebarFooter>
         </Sidebar>
     );
 }

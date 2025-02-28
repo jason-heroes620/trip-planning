@@ -24,7 +24,7 @@ const Location = () => {
 
     return (
         <UserLayout>
-            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-40">
+            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-60">
                 <div className="py-4">
                     <Button
                         variant={'destructive'}
@@ -33,14 +33,14 @@ const Location = () => {
                         Back
                     </Button>
                 </div>
-                <div className="flex flex-col items-center py-4 md:max-h-[380px] md:flex-row md:gap-6">
+                <div className="flex flex-col items-center py-4 md:max-h-[400px] md:flex-row md:gap-6">
                     <div className="flex w-full justify-center md:w-[50%]">
                         <div className="px-10">
                             <ImagesCarousel images={productImages} />
                         </div>
                     </div>
 
-                    <div className="flex w-full flex-col rounded-lg border bg-orange-50 px-4 py-2 md:w-[50%] md:gap-2 md:px-8 lg:px-10">
+                    <div className="flex w-full flex-col rounded-lg border bg-orange-50 px-4 py-4 md:w-[50%] md:gap-2 md:px-8 lg:px-10">
                         <div>
                             <span className="line-clamp-2 text-lg font-bold">
                                 {product.product_name}
@@ -50,20 +50,25 @@ const Location = () => {
                             <div className="flex flex-col py-2 md:grid md:grid-cols-2 md:gap-2">
                                 <div className="flex flex-row items-center gap-2 md:col-span-2">
                                     <MapPin size={16} color="red" />
-                                    <span className="text-sm">
+                                    <span className="text-md">
                                         {product.location}
                                     </span>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 py-2">
+                            <div className="py grid grid-cols-2 gap-4">
                                 <div className="col-span-1 flex items-center gap-2">
                                     <UsersRound size={16} color="red" />
-                                    <span>{product.age_group} years old</span>
+                                    <span className="text-sm">
+                                        {product.age_group} years old
+                                    </span>
                                 </div>
                                 <div className="col-span-1 flex items-center gap-2">
-                                    <Hourglass size={16} color="red" />
-                                    <span>
+                                    <div className="flex justify-start md:min-w-[55px]">
+                                        <Hourglass size={16} color="red" />
+                                    </div>
+
+                                    <span className="text-sm">
                                         {secondsToHms(
                                             parseInt(product.duration),
                                         )}
@@ -71,18 +76,18 @@ const Location = () => {
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4 py-2">
+                            <div className="py grid grid-cols-2 gap-4">
                                 <div className="col-span-1 flex items-center gap-2">
                                     <Utensils size={16} color="red" />
-                                    <span>
+                                    <span className="text-sm">
                                         {product.food_allowed === 0
                                             ? 'Allowed'
                                             : 'Not Allowed'}
                                     </span>
                                 </div>
                                 <div className="col-span-1 flex items-center gap-2">
-                                    <span>Min/Max</span>
-                                    <span>
+                                    <span className="text-sm">Min/Max</span>
+                                    <span className="text-sm">
                                         {product.min_quantity}/
                                         {product.max_quantity}
                                     </span>
@@ -92,14 +97,14 @@ const Location = () => {
                             <div className="flex flex-col items-end justify-end py-4">
                                 <div className="flex flex-row items-center gap-2">
                                     <small>(child)</small>
-                                    <span className="text-xl font-bold">
+                                    <span className="text-xl font-bold text-[#F86F3E]">
                                         RM{product.child_price}
                                     </span>
                                 </div>
                                 <div className="flex flex-row items-center gap-2">
-                                    <small>(adult)</small>
-                                    <span className="text-xl font-bold">
-                                        RM{product.adult_price}
+                                    <small>(teacher)</small>
+                                    <span className="text-xl font-bold text-[#F86F3E]">
+                                        RM{product.teacher_price}
                                     </span>
                                 </div>
                             </div>

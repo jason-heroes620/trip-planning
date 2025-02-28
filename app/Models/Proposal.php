@@ -18,7 +18,7 @@ class Proposal extends Model
         'proposal_name',
         'proposal_date',
         'quotation_id',
-        'additional_cost',
+        'markup_per_student',
         'qty_student',
         'qty_teacher',
         'travel_duration',

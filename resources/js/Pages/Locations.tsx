@@ -9,7 +9,7 @@ const Locations = ({ newProducts, products }: any) => {
     const { data, links } = products;
     return (
         <UserLayout>
-            <div className="lg:px-30 px-8 py-4 md:px-20">
+            <div className="lg:px-30 px-4 py-4 md:px-20">
                 <div className="py-4">
                     <span className="text-lg font-bold">Locations</span>
                 </div>
@@ -23,7 +23,7 @@ const Locations = ({ newProducts, products }: any) => {
                         </div>
                     </div>
                     <hr />
-                    <div className="w-full flex-1 px-10 py-4">
+                    <div className="w-full flex-1 px-4 py-4 md:px-20 lg:px-32">
                         <div className="flex flex-row justify-end">
                             {/* <div className="flex items-center px-4">
                                 <Filter className="opacity-40" />

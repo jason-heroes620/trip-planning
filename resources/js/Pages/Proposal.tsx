@@ -32,6 +32,7 @@ import { ProposalItem } from '@/types';
 import { formattedNumber } from '@/util/formatNumber';
 import { renderHTML } from '@/util/renderHtml';
 import { secondsToHms } from '@/util/secondsToHms';
+import useDisabledDays from '@/util/useDisabledDays';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { useLoadScript } from '@react-google-maps/api';
 import axios from 'axios';
@@ -48,6 +49,7 @@ const ProposalView = ({
     items,
     proposal_item,
     proposal_fees,
+    proposal_endDate,
 }: any) => {
     const { toast } = useToast();
     const { props } = usePage();
@@ -63,8 +65,11 @@ const ProposalView = ({
         qty_teacher: proposal.qty_teacher,
         proposal_status: proposal.proposal_status,
         special_request: proposal.special_request,
-        additional_cost: proposal.additional_cost,
+        markup_per_student: proposal.markup_per_student,
     });
+    const { disabledDays, loading, error } = useDisabledDays(
+        proposal.proposal_id,
+    );
 
     const libraries = useMemo(() => ['places'], []);
     const { isLoaded } = useLoadScript({
@@ -139,6 +144,16 @@ const ProposalView = ({
     );
     const [insuranceItem, setInsuranceItem] = useState(
         items.filter((i: any) => i.item_type === 'INSURANCE'),
+    );
+
+    const [guideItem, setGuideItem] = useState(
+        items.filter(
+            (i: any) =>
+                i.item_type === 'GUIDE' &&
+                proposal_product.some(
+                    (p: any) => p.product_id === i.product_id,
+                ),
+        ),
     );
 
     const [proposalItems, setProposalItems] = useState(proposal_item);
@@ -219,28 +234,30 @@ const ProposalView = ({
     ) => {
         e.preventDefault();
         let child = 0;
-        let adult = 0;
+        let teacher = 0;
 
         child = attribute === 'child' ? parseInt(e.target.value) : qty;
-        adult = attribute === 'adult' ? parseInt(e.target.value) : qty;
+        teacher = attribute === 'teacher' ? parseInt(e.target.value) : qty;
         setData('qty_student', child);
-        setData('qty_teacher', adult);
+        setData('qty_teacher', teacher);
 
-        calculateTotal(proposalItems, child, adult);
+        calculateTotal(proposalItems, child, teacher);
     };
 
     const [productTotal, setProductTotal] = useState(0);
     const [optionTotal, setOptionTotal] = useState(0);
     const [feeTotal, setFeeTotal] = useState(0);
     const [total, setTotal] = useState(0);
-    const [additionalCost, setAdditionalCost] = useState('0.00');
+    const [markupPerStudent, setMarkupPerStudent] = useState(
+        data.markup_per_student ?? 0,
+    );
 
-    const calculateTotal = (i: any, child: number, adult: number) => {
+    const calculateTotal = (i: any, child: number, teacher: number) => {
         let product = product_prices.reduce(
             (sum: number, p: any) =>
                 p.attribute === 'child'
                     ? sum + child * parseFloat(p.unit_price)
-                    : sum + adult * parseFloat(p.unit_price),
+                    : sum + teacher * parseFloat(p.unit_price),
             0.0,
         );
 
@@ -280,7 +297,7 @@ const ProposalView = ({
 
     useEffect(() => {
         let travelLocations = proposal_product.map((p: any) => {
-            return { location: p.location.location, stopover: true };
+            return { location: p.location.google_location, stopover: true };
         });
 
         setLocations(travelLocations);
@@ -292,10 +309,10 @@ const ProposalView = ({
             return p.attribute === 'child';
         });
 
-        let adult = product_prices.find((p: any) => {
-            return p.attribute === 'adult';
+        let teacher = product_prices.find((p: any) => {
+            return p.attribute === 'teacher';
         });
-        calculateTotal(proposal_item, child.qty, adult.qty);
+        calculateTotal(proposal_item, child.qty, teacher.qty);
     }, [travelInfo.travelDistance]);
 
     const handleSubmitDraft = (e: any) => {
@@ -369,33 +386,38 @@ const ProposalView = ({
             .catch((err) => {});
     };
 
-    const handleSaveAdditionalCost = (
+    const handleSaveMarkupPerStudent = (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         e.preventDefault();
         axios
-            .put(route('proposal.additional_cost', proposal.proposal_id), {
-                additional_cost: additionalCost,
+            .put(route('proposal.markup', proposal.proposal_id), {
+                markup_per_student: markupPerStudent,
             })
             .then((resp) => {
                 if (resp.status === 200) {
                     toast({
-                        description:
-                            'Additional Cost has been added to proposal',
+                        description: 'Update has been applied to proposal',
                     });
                 } else {
                     toast({
                         variant: 'destructive',
                         description:
-                            'There was an error adding additional cost to your proposal.',
+                            'There was an error updating your proposal.',
                     });
                 }
             });
     };
 
+    const isDateDisabled = (dateToCheck: Date) => {
+        const dayOfWeek = moment(dateToCheck).day();
+        // return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday, 3 = Wednesday
+        return disabledDays.includes(dayOfWeek);
+    };
+
     return (
         <UserLayout>
-            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-40">
+            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-60">
                 <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row items-center gap-6">
                         <div className="py-4">
@@ -437,6 +459,9 @@ const ProposalView = ({
                                 }
                                 maxLength={200}
                                 required
+                                disabled={
+                                    proposal.proposal_status > 1 ? true : false
+                                }
                             />
                         </div>
                         <div>
@@ -478,6 +503,7 @@ const ProposalView = ({
                                         fromDate={moment()
                                             .add(10, 'days')
                                             .toDate()}
+                                        toDate={proposal_endDate}
                                         onSelect={(date) => {
                                             setDate(date);
                                             setData(
@@ -485,6 +511,7 @@ const ProposalView = ({
                                                 date?.toLocaleDateString(),
                                             );
                                         }}
+                                        disabled={isDateDisabled}
                                         defaultMonth={date}
                                     />
                                 </PopoverContent>
@@ -507,6 +534,9 @@ const ProposalView = ({
                                 }}
                                 maxLength={4}
                                 type="number"
+                                disabled={
+                                    proposal.proposal_status > 1 ? true : false
+                                }
                             />
                         </div>
                         <div>
@@ -520,12 +550,15 @@ const ProposalView = ({
                                 onChange={(e) => {
                                     handleQtyChange(
                                         e,
-                                        'adult',
+                                        'teacher',
                                         data.qty_student,
                                     );
                                 }}
                                 maxLength={4}
                                 type="number"
+                                disabled={
+                                    proposal.proposal_status > 1 ? true : false
+                                }
                             />
                         </div>
                         {/* <div className="py-2">
@@ -535,16 +568,16 @@ const ProposalView = ({
                         </div> */}
                         {proposal.proposal_status === 3 && (
                             <div>
-                                <InputLabel>Additional Charges</InputLabel>
+                                <InputLabel>Markup Per Student</InputLabel>
                                 <div className="flex flex-row items-center gap-4">
                                     <TextInput
                                         id="additional_cost"
                                         name="additional_cost"
-                                        defaultValue={data.additional_cost}
+                                        defaultValue={data.markup_per_student}
                                         className="mt-1 block w-full"
                                         autoComplete="additional_cost"
                                         onChange={(e) =>
-                                            setAdditionalCost(e.target.value)
+                                            setMarkupPerStudent(e.target.value)
                                         }
                                         maxLength={4}
                                         type="number"
@@ -553,7 +586,7 @@ const ProposalView = ({
                                         <Button
                                             variant="primary"
                                             onClick={(e: any) =>
-                                                handleSaveAdditionalCost(e)
+                                                handleSaveMarkupPerStudent(e)
                                             }
                                         >
                                             Add
@@ -644,9 +677,10 @@ const ProposalView = ({
                                             </div>
                                             <div className="flex flex-row justify-end">
                                                 <span className="text-left font-bold">
-                                                    (adult){' '}
+                                                    (teacher){' '}
                                                     {formattedNumber(
-                                                        p.location.adult_price,
+                                                        p.location
+                                                            .teacher_price,
                                                     )}
                                                 </span>
                                             </div>
@@ -758,6 +792,28 @@ const ProposalView = ({
                                     />
                                 </AccordionContent>
                             </AccordionItem>
+                            {guideItem.length > 0 && (
+                                <AccordionItem value="item-4">
+                                    <AccordionTrigger>Guide</AccordionTrigger>
+                                    <AccordionContent>
+                                        <AccordionProposalItem
+                                            productItems={guideItem}
+                                            proposalItems={proposalItems}
+                                            handleProposalItemChanged={
+                                                handleProposalItemChanged
+                                            }
+                                            handleItemQtyChange={
+                                                handleItemQtyChange
+                                            }
+                                            distance={0}
+                                            proposalStatus={
+                                                data.proposal_status
+                                            }
+                                            calculate={false}
+                                        />
+                                    </AccordionContent>
+                                </AccordionItem>
+                            )}
                         </Accordion>
                     </div>
                 </div>
@@ -767,12 +823,13 @@ const ProposalView = ({
                     <textarea
                         id="special_request"
                         name="special_request"
-                        value={data.special_request}
+                        value={data.special_request ?? ''}
                         className="mt-1 block w-full"
                         onChange={(e) => {
                             setData('special_request', e.target.value);
                         }}
                         rows={4}
+                        disabled={proposal.proposal_status > 1 ? true : false}
                     />
                 </div>
                 <hr />
@@ -859,6 +916,19 @@ const ProposalView = ({
                         </span>
                     </div> */}
                 </div>
+                {proposal.proposal_status === 3 && (
+                    <div>
+                        <span>
+                            Costing Per Student:{' '}
+                            {formattedNumber(
+                                (total +
+                                    markupPerStudent * proposal.qty_student) /
+                                    (proposal.qty_student +
+                                        proposal.qty_teacher),
+                            )}
+                        </span>
+                    </div>
+                )}
 
                 <div className="flex justify-end gap-2 py-2">
                     <AlertDialog open={open} onOpenChange={setOpen}>

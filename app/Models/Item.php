@@ -19,6 +19,7 @@ class Item extends Model
         'sales_tax',
         'item_type',
         'provider_id',
+        'product_id',
         'item_status',
         'item_description'
     ];

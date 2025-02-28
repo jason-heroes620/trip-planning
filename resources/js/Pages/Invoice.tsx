@@ -172,14 +172,20 @@ const Invoice = ({
                         </div>
                         {proposalProduct.map((product: any, index: any) => {
                             return (
-                                <div className="flex flex-col py-4 md:grid md:grid-cols-6">
+                                <div
+                                    className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                    key={product.proposal_product_id}
+                                >
                                     <div className="flex md:col-span-3 md:row-span-2">
                                         {product.product.product_name}
                                     </div>
 
                                     {product.product_price.map((p: any) => {
                                         return (
-                                            <div className="flex flex-row justify-between md:col-span-3">
+                                            <div
+                                                className="flex flex-row justify-between md:col-span-3"
+                                                key={p.product_price_id}
+                                            >
                                                 <div className="flex md:col-span-1 md:justify-end">
                                                     {p.qty}
                                                 </div>
@@ -200,7 +206,10 @@ const Invoice = ({
 
                         {proposalItems.map((item: any, index: any) => {
                             return (
-                                <div className="flex flex-col py-4 md:grid md:grid-cols-6">
+                                <div
+                                    className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                    key={index}
+                                >
                                     <div className="flex md:col-span-3">
                                         {item.item_name}
                                     </div>
@@ -228,7 +237,7 @@ const Invoice = ({
                             return (
                                 <div
                                     className="flex justify-end gap-4"
-                                    key={index}
+                                    key={o.order_total_id}
                                 >
                                     <span className="font-bold">{o.title}</span>
                                     <span className="font-bold">

@@ -71,8 +71,8 @@ Route::middleware('auth')->group(function () {
     Route::patch('/proposal/{id}', [ProposalController::class, 'travel_info'])->name('proposal.travel_info');
     Route::get('/proposal_pdf/{id}', [ProposalController::class, 'createProposalPdf'])->name('proposal.pdf');
 
-    Route::put('/proposal_additional_cost/{id}', [ProposalController::class, 'addAdditionalCost'])->name('proposal.additional_cost');
-
+    Route::put('/proposal_markup/{id}', [ProposalController::class, 'addMarkup'])->name('proposal.markup');
+    Route::get('/getDisabledDays/{id}', [ProposalController::class, 'getDisabledDays'])->name('proposal.getDisabledDays');
     Route::post('/proposalProduct/add', [ProposalProductController::class, 'addProduct'])->name('proposalProduct.add');
 
     // quotation

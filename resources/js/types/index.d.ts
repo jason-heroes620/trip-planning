@@ -40,7 +40,7 @@ export interface Product {
     age_group: string;
     location: string;
     child_price: number;
-    adult_price: number;
+    teacher_price: number;
     duration: string;
     category_id: string;
     id: string;

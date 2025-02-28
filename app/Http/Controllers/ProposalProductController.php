@@ -18,7 +18,7 @@ class ProposalProductController extends Controller
                 'product_id' => $req->input('product_id'),
             ]);;
 
-            $price = Location::select(["adult_price", "child_price"])->where('id', $req->input('product_id'))->first();
+            $price = Location::select(["teacher_price", "child_price"])->where('id', $req->input('product_id'))->first();
             ProposalProductPrice::create([
                 'proposal_product_id' => $proposal_product['proposal_product_id'],
                 'uom' => 'pax',
@@ -31,8 +31,8 @@ class ProposalProductController extends Controller
             ProposalProductPrice::create([
                 'proposal_product_id' => $proposal_product['proposal_product_id'],
                 'uom' => 'pax',
-                'unit_price' => $price["adult_price"],
-                'attribute' => 'adult',
+                'unit_price' => $price["teacher_price"],
+                'attribute' => 'teacher',
                 'qty' => 1,
                 'sales_tax' => 0.00
             ]);
