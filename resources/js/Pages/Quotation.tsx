@@ -113,7 +113,7 @@ const Quotation = ({
 
     return (
         <UserLayout>
-            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-40">
+            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-32">
                 <div className="flex flex-row items-center gap-10">
                     <div className="py-2">
                         <Button asChild variant={'destructive'}>

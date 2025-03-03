@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use App\Events\OrderPaymentEvent;
+use App\Mail\OrderPaymentEmail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +26,7 @@ class OrderPayment
     public function handle(OrderPaymentEvent $event): void
     {
         Log::info('Payment made mail sent to admin');
-        $emails = ['admin@heroes.my'];
+        $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
         Mail::to($emails)
             ->bcc($bccEmail)

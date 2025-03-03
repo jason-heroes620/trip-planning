@@ -23,7 +23,10 @@ class QuotationRequest
     public function handle(QuotationRequestEvent $event): void
     {
         Log::info('Quotation Requested, ' . 'school: ' . $event->school['school_name']);
-        $emails = ['admin@heroes.my', 'jason.w@heroes.my'];
-        Mail::to($emails)->send(new QuotationRequestEmail($event->school));
+        $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
+        $bccEmail = ['jason.w@heroes.my'];
+        Mail::to($emails)
+            ->bcc($bccEmail)
+            ->send(new QuotationRequestEmail($event->school));
     }
 }

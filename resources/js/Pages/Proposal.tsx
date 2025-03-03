@@ -233,15 +233,15 @@ const ProposalView = ({
         qty: number,
     ) => {
         e.preventDefault();
-        let child = 0;
+        let student = 0;
         let teacher = 0;
 
-        child = attribute === 'child' ? parseInt(e.target.value) : qty;
+        student = attribute === 'student' ? parseInt(e.target.value) : qty;
         teacher = attribute === 'teacher' ? parseInt(e.target.value) : qty;
-        setData('qty_student', child);
+        setData('qty_student', student);
         setData('qty_teacher', teacher);
 
-        calculateTotal(proposalItems, child, teacher);
+        calculateTotal(proposalItems, student, teacher);
     };
 
     const [productTotal, setProductTotal] = useState(0);
@@ -252,11 +252,11 @@ const ProposalView = ({
         data.markup_per_student ?? 0,
     );
 
-    const calculateTotal = (i: any, child: number, teacher: number) => {
+    const calculateTotal = (i: any, student: number, teacher: number) => {
         let product = product_prices.reduce(
             (sum: number, p: any) =>
-                p.attribute === 'child'
-                    ? sum + child * parseFloat(p.unit_price)
+                p.attribute === 'student'
+                    ? sum + student * parseFloat(p.unit_price)
                     : sum + teacher * parseFloat(p.unit_price),
             0.0,
         );
@@ -305,14 +305,16 @@ const ProposalView = ({
         if (proposal.travel_duration === 0 || proposal.travel_distance === 0) {
             calculateDistances(travelLocations);
         }
-        let child = product_prices.find((p: any) => {
-            return p.attribute === 'child';
-        });
+        // let child = product_prices.find((p: any) => {
+        //     return p.attribute === 'child';
+        // });
 
-        let teacher = product_prices.find((p: any) => {
-            return p.attribute === 'teacher';
-        });
-        calculateTotal(proposal_item, child.qty, teacher.qty);
+        // let teacher = product_prices.find((p: any) => {
+        //     return p.attribute === 'teacher';
+        // });
+
+        // calculateTotal(proposal_item, child.qty, teacher.qty);
+        calculateTotal(proposal_item, data.qty_student, data.qty_teacher);
     }, [travelInfo.travelDistance]);
 
     const handleSubmitDraft = (e: any) => {
@@ -417,7 +419,7 @@ const ProposalView = ({
 
     return (
         <UserLayout>
-            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-60">
+            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-32">
                 <div className="flex flex-row items-center justify-between">
                     <div className="flex flex-row items-center gap-6">
                         <div className="py-4">
@@ -528,7 +530,7 @@ const ProposalView = ({
                                 onChange={(e) => {
                                     handleQtyChange(
                                         e,
-                                        'child',
+                                        'student',
                                         data.qty_teacher,
                                     );
                                 }}
@@ -669,9 +671,10 @@ const ProposalView = ({
                                         <div className="flex flex-col py-2">
                                             <div className="flex flex-row justify-end">
                                                 <span className="text-left font-bold">
-                                                    (child ){' '}
+                                                    (student ){' '}
                                                     {formattedNumber(
-                                                        p.location.child_price,
+                                                        p.location
+                                                            .student_price,
                                                     )}
                                                 </span>
                                             </div>

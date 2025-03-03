@@ -6,7 +6,9 @@ use App\Models\Location;
 use App\Models\Order;
 use App\Models\Proposal;
 use App\Models\ProposalProduct;
+use App\Models\Quotation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
@@ -14,6 +16,10 @@ class DashboardController extends Controller
     //
     public function index()
     {
+        $proposal_count = Proposal::select('proposal_status', DB::raw('count(*) as total'))->whereIn('proposal_status', [0, 2])->groupBy('proposal_status')->get();
+        $quotation_count = Quotation::select('quotation_status', DB::raw('count(*) as total'))->whereIn('quotation_status', [0, 1, 3])->groupBy('quotation_status')->get();
+        $order_count = Order::where('order_status', '<=', 1)->count();
+
         $proposals = Order::select(['proposal_id'])->where('order_status', 2)->get();
 
         foreach ($proposals as $p) {
@@ -26,7 +32,7 @@ class DashboardController extends Controller
 
         $upcoming_trips = $proposals;
 
-        return Inertia::render('Dashboard', compact('upcoming_trips'));
+        return Inertia::render('Dashboard', compact('upcoming_trips', 'proposal_count', 'quotation_count', 'order_count'));
     }
 
     public function home()

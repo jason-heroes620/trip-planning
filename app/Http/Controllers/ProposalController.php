@@ -169,7 +169,7 @@ class ProposalController extends Controller
             foreach ($proposal_product as $p) {
 
                 ProposalProductPrice::where('proposal_product_id', $p['proposal_product_id'])
-                    ->where('attribute', 'child')
+                    ->where('attribute', 'student')
                     ->update([
                         'qty' => $req->input('qty_student')
                     ]);
@@ -213,13 +213,13 @@ class ProposalController extends Controller
                 'product_id' => $req->input('product_id'),
             ]);
 
-            $price = Location::select(["teacher_price", "child_price"])->where('id', $req->input('product_id'))->first();
+            $price = Location::select(["teacher_price", "student_price"])->where('id', $req->input('product_id'))->first();
 
             ProposalProductPrice::create([
                 'proposal_product_id' => $proposal_product['proposal_product_id'],
                 'uom' => 'pax',
-                'unit_price' => $price["child_price"],
-                'attribute' => 'child',
+                'unit_price' => $price["student_price"],
+                'attribute' => 'student',
                 'qty' => 1,
                 'sales_tax' => 0.00
             ]);

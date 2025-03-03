@@ -24,8 +24,8 @@ const Location = () => {
 
     return (
         <UserLayout>
-            <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-60">
-                <div className="py-4">
+            <div className="px-4 py-4 md:px-8 lg:px-16 xl:px-24">
+                <div className="py-2">
                     <Button
                         variant={'destructive'}
                         onClick={() => router.visit(previousUrl.toString())}
@@ -96,9 +96,9 @@ const Location = () => {
 
                             <div className="flex flex-col items-end justify-end py-4">
                                 <div className="flex flex-row items-center gap-2">
-                                    <small>(child)</small>
+                                    <small>(student)</small>
                                     <span className="text-xl font-bold text-[#F86F3E]">
-                                        RM{product.child_price}
+                                        RM{product.student_price}
                                     </span>
                                 </div>
                                 <div className="flex flex-row items-center gap-2">

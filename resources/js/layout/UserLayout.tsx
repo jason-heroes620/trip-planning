@@ -98,7 +98,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                             </div>
                         </div>
                     </header> */}
-                    <nav className="border-b border-gray-100 bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <nav className="border-b border-gray-100 bg-white shadow-lg dark:border-gray-700 dark:bg-gray-800">
                         <div className="px-4">
                             <div className="flex h-16 justify-between">
                                 <div className="flex">
@@ -209,15 +209,6 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                                     : 'hidden') + ' sm:hidden'
                             }
                         >
-                            <div className="space-y-1 pb-3 pt-2">
-                                <ResponsiveNavLink
-                                    href={route('dashboard')}
-                                    active={route().current('dashboard')}
-                                >
-                                    Dashboard
-                                </ResponsiveNavLink>
-                            </div>
-
                             <div className="border-t border-gray-200 pb-1 pt-4 dark:border-gray-600">
                                 <div className="px-4">
                                     <div className="text-base font-medium text-gray-800 dark:text-gray-200">

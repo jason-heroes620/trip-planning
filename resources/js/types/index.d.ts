@@ -39,7 +39,7 @@ export interface Product {
     product_images: Blob;
     age_group: string;
     location: string;
-    child_price: number;
+    student_price: number;
     teacher_price: number;
     duration: string;
     category_id: string;

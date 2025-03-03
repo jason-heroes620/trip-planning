@@ -26,7 +26,7 @@ class QuotationAccepted
     public function handle(QuotationAcceptedEvent $event): void
     {
         Log::info('School approved mail sent to ' . $event->school['email']);
-        $emails = ['admin@heroes.my'];
+        $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
         Mail::to($emails)
             ->bcc($bccEmail)

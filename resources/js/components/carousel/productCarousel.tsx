@@ -54,7 +54,7 @@ const ProductCarousel = ({ products }: any) => {
                                             <div className="flex items-center justify-end">
                                                 <div className="">
                                                     <span className="text-lg font-bold">
-                                                        RM{p.child_price}
+                                                        RM{p.student_price}
                                                     </span>
                                                 </div>
                                             </div>

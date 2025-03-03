@@ -13,12 +13,12 @@ class LocationController extends Controller
 {
     public function index()
     {
-        $newProducts = Location::select(['id', 'product_name', 'merchant_id', 'location', 'child_price', 'product_image'])->where('status', 0)->orderBy('created', 'desc')->take(5)->get();
+        $newProducts = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])->where('status', 0)->orderBy('created', 'desc')->take(5)->get();
         $product_ids = [];
         foreach ($newProducts as $p) {
             array_push($product_ids, $p['id']);
         }
-        $products = Location::select(['id', 'product_name', 'merchant_id', 'location', 'child_price', 'product_image'])->where('status', 0)->whereNotIn('id', $product_ids)->orderBy('created', 'desc')->paginate(12);
+        $products = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])->where('status', 0)->whereNotIn('id', $product_ids)->orderBy('created', 'desc')->paginate(12);
 
         foreach ($products as $product) {
             $product['url'] = $this->getImage($product['product_image']);

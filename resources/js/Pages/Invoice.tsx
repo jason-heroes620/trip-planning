@@ -24,7 +24,7 @@ const Invoice = ({
     return (
         <UserLayout>
             {loading && <Loading />}
-            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-40">
+            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-32">
                 <div className="flex flex-row items-center gap-10">
                     <div className="py-2">
                         <Button asChild variant={'destructive'}>
@@ -248,11 +248,13 @@ const Invoice = ({
                         })}
                     </div>
                     <hr />
-                    <div className="flex flex-col px-4 py-4 md:px-10 lg:px-20">
+                    <div className="flex flex-col px-4 py-4">
                         {payment && (
                             <div>
                                 <div className="flex flex-row gap-4">
-                                    <span>Payment Date: </span>
+                                    <span className="font-bold">
+                                        Payment Date:{' '}
+                                    </span>
                                     <span>
                                         {moment(payment.created).format(
                                             'DD/MM/YYYY',
@@ -260,16 +262,22 @@ const Invoice = ({
                                     </span>
                                 </div>
                                 <div className="flex flex-row gap-4">
-                                    <span>Payment Ref: </span>
+                                    <span className="font-bold">
+                                        Payment Ref:{' '}
+                                    </span>
                                     <span>{payment.payment_ref}</span>
                                 </div>
 
                                 <div className="flex flex-row gap-4">
-                                    <span>Bank Ref.: </span>
+                                    <span className="font-bold">
+                                        Bank Ref.:{' '}
+                                    </span>
                                     <span>{payment.bank_ref}</span>
                                 </div>
                                 <div className="flex flex-row gap-4">
-                                    <span>Payment Method: </span>
+                                    <span className="font-bold">
+                                        Payment Method:{' '}
+                                    </span>
                                     <span>{payment.payment_method}</span>
                                 </div>
                             </div>

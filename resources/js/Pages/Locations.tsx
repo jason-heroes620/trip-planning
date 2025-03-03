@@ -6,15 +6,15 @@ import { Link } from '@inertiajs/react';
 import { MapPin } from 'lucide-react';
 
 const Locations = ({ newProducts, products }: any) => {
-    const { data, links } = products;
+    const { data, links, to, from, total } = products;
     return (
         <UserLayout>
-            <div className="lg:px-30 px-4 py-4 md:px-20">
+            <div className="md:px-18 px-4 py-4 lg:px-20 xl:px-28">
                 <div className="py-4">
                     <span className="text-lg font-bold">Locations</span>
                 </div>
                 <div className="flex flex-col">
-                    <div className="flex flex-col py-4">
+                    <div className="flex flex-col pb-6">
                         <div className="py-2">
                             <span>What's New</span>
                         </div>
@@ -23,7 +23,7 @@ const Locations = ({ newProducts, products }: any) => {
                         </div>
                     </div>
                     <hr />
-                    <div className="w-full flex-1 px-4 py-4 md:px-20 lg:px-32">
+                    <div className="w-full flex-1 px-4 py-4 md:px-4 lg:px-10">
                         <div className="flex flex-row justify-end">
                             {/* <div className="flex items-center px-4">
                                 <Filter className="opacity-40" />
@@ -74,7 +74,7 @@ const Locations = ({ newProducts, products }: any) => {
                                                                 <span className="text-lg font-bold">
                                                                     RM
                                                                     {
-                                                                        p.child_price
+                                                                        p.student_price
                                                                     }
                                                                 </span>
                                                             </div>
@@ -86,7 +86,14 @@ const Locations = ({ newProducts, products }: any) => {
                                     </Link>
                                 ))}
                             </div>
-                            <Pagination links={links} />
+                            <div className="flex flex-col gap-2 py-4">
+                                <Pagination links={links} />
+                                {from && (
+                                    <span className="text-sm">
+                                        Showing {from} - {to} of {total} records
+                                    </span>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
