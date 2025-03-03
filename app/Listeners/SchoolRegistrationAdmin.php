@@ -28,7 +28,7 @@ class SchoolRegistrationAdmin
         Log::info('School approved mail sent to ' . $event->school['email']);
         // $emails = [$event->school['email'], 'admin@heroes.my'];
         $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
-        $bccEmail = [, 'jason.w@heroes.my'];
+        $bccEmail = ['jason.w@heroes.my'];
         Mail::to($emails)
             ->bcc($bccEmail)
             ->send(new SchoolRegistrationAdminEmail($event->school));
