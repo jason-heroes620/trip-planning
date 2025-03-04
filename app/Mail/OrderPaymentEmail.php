@@ -19,7 +19,7 @@ class OrderPaymentEmail extends Mailable
     public function __construct($school, $order)
     {
         $this->school = $school;
-        $this->order = $order
+        $this->order = $order;
     }
 
     /**

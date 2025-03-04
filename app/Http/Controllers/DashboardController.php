@@ -14,13 +14,14 @@ use Inertia\Inertia;
 class DashboardController extends Controller
 {
     //
-    public function index()
+    public function index(Request $req)
     {
-        $proposal_count = Proposal::select('proposal_status', DB::raw('count(*) as total'))->whereIn('proposal_status', [0, 2])->groupBy('proposal_status')->get();
-        $quotation_count = Quotation::select('quotation_status', DB::raw('count(*) as total'))->whereIn('quotation_status', [0, 1, 3])->groupBy('quotation_status')->get();
-        $order_count = Order::where('order_status', '<=', 1)->count();
+        $user = $req->user();
+        $proposal_count = Proposal::select('proposal_status', DB::raw('count(*) as total'))->where('user_id', $user->id)->whereIn('proposal_status', [0, 2])->groupBy('proposal_status')->get();
+        $quotation_count = Quotation::select('quotation_status', DB::raw('count(*) as total'))->where('user_id', $user->id)->whereIn('quotation_status', [0, 1, 3])->groupBy('quotation_status')->get();
+        $order_count = Order::where('order_status', '<=', 1)->where('user_id', $user->id)->count();
 
-        $proposals = Order::select(['proposal_id'])->where('order_status', 2)->get();
+        $proposals = Order::select(['proposal_id'])->where('user_id', $user->id)->where('order_status', 2)->get();
 
         foreach ($proposals as $p) {
             $proposal_date = Proposal::select(['proposal_date'])->where('proposal_id', $p['proposal_id'])->first();
