@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\QuotationAcceptedEvent;
+use App\Events\QuotationRequestEvent;
 use App\Models\Fees;
 use App\Models\Location;
 use App\Models\Proposal;
@@ -138,7 +139,8 @@ class QuotationController extends Controller
             //         'quotation_id' => $quotation_id
             //     ]);
             // }
-
+            $school = School::where('user_id', $user->id)->first();
+            event(new QuotationRequestEvent($school));
             $data["success"] = "Your request for quotation has been sent. Please allow 3 - 5 business days for us to process your request.";
 
             return response()->json($data);
