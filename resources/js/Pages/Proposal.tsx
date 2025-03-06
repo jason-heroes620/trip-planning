@@ -46,7 +46,13 @@ import useDisabledDays from '@/util/useDisabledDays';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { useLoadScript } from '@react-google-maps/api';
 import axios from 'axios';
-import { CalendarIcon, Hourglass, MapPin, UsersRound } from 'lucide-react';
+import {
+    CalendarIcon,
+    Hourglass,
+    MapPin,
+    UsersRound,
+    Utensils,
+} from 'lucide-react';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -684,14 +690,20 @@ const ProposalView = ({
                                         </div>
                                         <div className="grid grid-cols-2 py-2">
                                             <div className="flex flex-row items-center gap-2">
-                                                <UsersRound size={16} />
+                                                <UsersRound
+                                                    size={16}
+                                                    color="red"
+                                                />
                                                 <span className="text-sm">
                                                     {p.location.age_group}
                                                 </span>
                                             </div>
                                             {p.location.duration ? (
                                                 <div className="flex flex-row items-center gap-2">
-                                                    <Hourglass size={16} />
+                                                    <Hourglass
+                                                        size={16}
+                                                        color="red"
+                                                    />
                                                     <span className="text-sm">
                                                         {secondsToHms(
                                                             p.location.duration,
@@ -701,6 +713,30 @@ const ProposalView = ({
                                             ) : (
                                                 ''
                                             )}
+                                        </div>
+                                        <div className="py grid grid-cols-2">
+                                            <div className="flex flex-row items-center gap-2">
+                                                <Utensils
+                                                    size={16}
+                                                    color="red"
+                                                />
+                                                <span className="text-sm">
+                                                    {p.location.food_allowed ===
+                                                    0
+                                                        ? 'Allowed'
+                                                        : 'Not Allowed'}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex flex-row items-center gap-2">
+                                                <span className="text-sm text-red-500">
+                                                    Min/Max
+                                                </span>
+                                                <span className="text-sm">
+                                                    {p.location.min_quantity}/
+                                                    {p.location.max_quantity}
+                                                </span>
+                                            </div>
                                         </div>
                                         <div className="py-2">
                                             <span className="line-clamp-3 text-justify">
@@ -971,10 +1007,10 @@ const ProposalView = ({
 
                             {proposal.discount_type === 'F' ? (
                                 <div className="flex justify-end gap-4">
-                                    <span className="text-lg font-bold text-red-800">
+                                    <span className="text-lg font-bold text-red-600">
                                         Discount
                                     </span>
-                                    <span className="text-lg font-bold text-red-800">
+                                    <span className="text-lg font-bold text-red-600">
                                         -{' '}
                                         {formattedNumber(
                                             proposal.discount_amount,
@@ -988,7 +1024,7 @@ const ProposalView = ({
                                         Discount ({proposal.discount_percentage}
                                         %)
                                     </span>
-                                    <span className="text-lg font-bold text-red-800">
+                                    <span className="text-lg font-bold text-red-600">
                                         {'  '}-{' '}
                                         {formattedNumber(
                                             proposal.discount_amount,
@@ -1062,7 +1098,7 @@ const ProposalView = ({
                     >
                         <AlertDialogTrigger asChild>
                             <Button
-                                variant="destructive"
+                                variant="primary"
                                 disabled={
                                     data.proposal_status < 1 &&
                                     data.proposal_date
