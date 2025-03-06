@@ -12,39 +12,49 @@ export default function Dashboard({
     return (
         <UserLayout>
             <Head title="Dashboard" />
-            <div className="xl:px-30 px-4 py-2 md:px-10 lg:px-20">
+            <div className="px-4 py-2 md:px-10 lg:px-20 xl:px-30">
                 <div className="py-4">
                     <span className="text-lg font-bold">Dahsboard</span>
                 </div>
-                <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 overflow-x-auto py-4 pb-6 md:grid-cols-4">
-                    <Card className={`w-60 border shadow-md`}>
+                <div className="mx-auto flex flex-col gap-6 overflow-x-auto py-4 pb-6 md:flex-row">
+                    <Card
+                        className={`w-60 border shadow-md md:col-span-1 md:grid`}
+                    >
                         <CardContent className="px-4 py-2">
                             <div className="pb-2">
                                 <span className="font-semibold">Proposals</span>
                             </div>
                             <div id="content" className="flex flex-col px-4">
                                 {proposal_count &&
-                                    proposal_count.map((p: any) => {
-                                        return p.proposal_status === 0 ? (
-                                            <div className="flex justify-between">
-                                                <span className="text-sm italic">
-                                                    Draft
-                                                </span>
-                                                <span>{p.total}</span>
-                                            </div>
-                                        ) : (
-                                            <div className="flex justify-between">
-                                                <span className="text-sm italic">
-                                                    Pending Quotation
-                                                </span>
-                                                <span>{p.total}</span>
-                                            </div>
-                                        );
-                                    })}
+                                    proposal_count.map(
+                                        (p: any, index: number) => {
+                                            return p.proposal_status === 0 ? (
+                                                <div
+                                                    className="flex justify-between"
+                                                    key={index}
+                                                >
+                                                    <span className="text-sm text-gray-500 italic">
+                                                        Draft
+                                                    </span>
+                                                    <span>{p.total}</span>
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className="flex justify-between"
+                                                    key={index}
+                                                >
+                                                    <span className="text-sm text-orange-600 italic">
+                                                        Pending Quotation
+                                                    </span>
+                                                    <span>{p.total}</span>
+                                                </div>
+                                            );
+                                        },
+                                    )}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className={`w-60 border shadow-md`}>
+                    <Card className={`w-60 border shadow-md md:col-span-1`}>
                         <CardContent className="px-4 py-2">
                             <div className="pb-2">
                                 <span className="font-semibold">
@@ -53,34 +63,45 @@ export default function Dashboard({
                             </div>
                             <div id="content" className="flex flex-col px-4">
                                 {quotation_count &&
-                                    quotation_count.map((p: any) => {
-                                        return p.quotation_status === 0 ? (
-                                            <div className="flex justify-between">
-                                                <span className="text-sm italic">
-                                                    In Process
-                                                </span>
-                                                <span>{p.total}</span>
-                                            </div>
-                                        ) : p.quotation_status === 1 ? (
-                                            <div className="flex justify-between">
-                                                <span className="text-sm italic">
-                                                    Ready For Review
-                                                </span>
-                                                <span>{p.total}</span>
-                                            </div>
-                                        ) : (
-                                            <div className="flex justify-between">
-                                                <span className="text-sm italic">
-                                                    Order Issued
-                                                </span>
-                                                <span>{p.total}</span>
-                                            </div>
-                                        );
-                                    })}
+                                    quotation_count.map(
+                                        (p: any, index: number) => {
+                                            return p.quotation_status === 0 ? (
+                                                <div
+                                                    className="flex justify-between"
+                                                    key={index}
+                                                >
+                                                    <span className="text-sm text-red-700 italic">
+                                                        In Process
+                                                    </span>
+                                                    <span>{p.total}</span>
+                                                </div>
+                                            ) : p.quotation_status === 1 ? (
+                                                <div
+                                                    className="flex justify-between"
+                                                    key={index}
+                                                >
+                                                    <span className="text-sm text-orange-600 italic">
+                                                        Ready For Review
+                                                    </span>
+                                                    <span>{p.total}</span>
+                                                </div>
+                                            ) : (
+                                                <div
+                                                    className="flex justify-between"
+                                                    key={index}
+                                                >
+                                                    <span className="text-sm text-green-700 italic">
+                                                        Order Issued
+                                                    </span>
+                                                    <span>{p.total}</span>
+                                                </div>
+                                            );
+                                        },
+                                    )}
                             </div>
                         </CardContent>
                     </Card>
-                    <Card className={`w-60 border shadow-md`}>
+                    <Card className={`w-60 border shadow-md md:col-span-1`}>
                         <CardContent className="px-4 py-2">
                             <div className="pb-2">
                                 <span className="font-semibold">Order</span>
@@ -88,7 +109,7 @@ export default function Dashboard({
                             <div id="content" className="flex flex-col px-4">
                                 {order_count > 0 && (
                                     <div className="flex justify-between">
-                                        <span className="text-sm italic">
+                                        <span className="text-sm text-orange-600 italic">
                                             Pending Payment
                                         </span>
                                         <span>{order_count}</span>
@@ -116,7 +137,7 @@ export default function Dashboard({
 
                 <div className="py-4">
                     <span className="font-bold">Upcoming Trips</span>
-                    <div className="py-4">
+                    <div className="flex flex-col py-4 md:grid md:grid-cols-4">
                         {upcoming_trips.length > 0 &&
                             upcoming_trips.map((u: any) => {
                                 return (
@@ -126,6 +147,7 @@ export default function Dashboard({
                                             u.proposal_id,
                                         )}
                                         key={u.proposal_id}
+                                        className="flex items-center justify-center"
                                     >
                                         <Card
                                             className={`w-60 border shadow-md`}

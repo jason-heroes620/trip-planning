@@ -29,8 +29,11 @@ class SchoolRegistrationAdmin
         // $emails = [$event->school['email'], 'admin@heroes.my'];
         $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
-        Mail::to($emails)
-            ->bcc($bccEmail)
-            ->send(new SchoolRegistrationAdminEmail($event->school));
+
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)
+                ->bcc($bccEmail)
+                ->send(new SchoolRegistrationAdminEmail($event->school));
+        }
     }
 }

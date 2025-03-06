@@ -28,8 +28,11 @@ class OrderPayment
         Log::info('Payment made mail sent to admin');
         $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
-        Mail::to($emails)
-            ->bcc($bccEmail)
-            ->send(new OrderPaymentEmail($event->school, $event->order));
+
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)
+                ->bcc($bccEmail)
+                ->send(new OrderPaymentEmail($event->school, $event->order));
+        }
     }
 }

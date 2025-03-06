@@ -28,8 +28,11 @@ class QuotationAccepted
         Log::info('School approved mail sent to ' . $event->school['email']);
         $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
-        Mail::to($emails)
-            ->bcc($bccEmail)
-            ->send(new QuotationAcceptedEmail($event->quotation, $event->school));
+
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)
+                ->bcc($bccEmail)
+                ->send(new QuotationAcceptedEmail($event->quotation, $event->school));
+        }
     }
 }

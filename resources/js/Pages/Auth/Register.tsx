@@ -1,6 +1,5 @@
 import InputError from '@/components/InputError';
 import InputLabel from '@/components/InputLabel';
-import PrimaryButton from '@/components/PrimaryButton';
 import SelectInput from '@/components/SelectInput';
 import States from '@/components/states.json';
 import TextInput from '@/components/TextInput';
@@ -322,8 +321,10 @@ export default function Register() {
                 </div>
 
                 <div className="mt-4">
-                    <InputLabel htmlFor="mobile_no" value="Mobile No." />
-
+                    <div className="flex flex-row gap-2">
+                        <InputLabel htmlFor="mobile_no" value="Mobile No." />
+                        <span className="text-red-500">*</span>
+                    </div>
                     <TextInput
                         id="mobile_no"
                         name="mobile_no"
@@ -332,6 +333,7 @@ export default function Register() {
                         autoComplete="mobile_no"
                         onChange={(e) => setData('mobile_no', e.target.value)}
                         maxLength={20}
+                        required
                     />
 
                     <InputError message={errors.mobile_no} className="mt-2" />
@@ -360,7 +362,7 @@ export default function Register() {
                 <div className="py-4">
                     <InputLabel
                         htmlFor="school_logo"
-                        value="School Logo (.png, .jpg)"
+                        value="Please Upload Your School Logo (.png, .jpg)"
                         className="pb-2"
                     />
                     <input
@@ -375,17 +377,20 @@ export default function Register() {
                     )}
                 </div>
 
-                <div className="mt-4 flex items-center justify-end">
+                <div className="mt-4 flex items-center justify-end gap-4">
                     <Link
                         href={route('login')}
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
+                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-none dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
                     >
                         Already registered?
                     </Link>
 
-                    <PrimaryButton className="ms-4" disabled={processing}>
+                    {/* <PrimaryButton className="ms-4" disabled={processing}>
                         Register
-                    </PrimaryButton>
+                    </PrimaryButton> */}
+                    <Button disabled={processing} variant={'primary'}>
+                        Register
+                    </Button>
                 </div>
             </form>
         </GuestLayout>

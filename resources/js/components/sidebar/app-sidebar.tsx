@@ -18,19 +18,28 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { Link } from '@inertiajs/react';
-import { Bus, ChevronDown, LayoutDashboard, Receipt } from 'lucide-react';
+import {
+    BookOpenText,
+    Bus,
+    ChevronDown,
+    LayoutDashboard,
+    Receipt,
+} from 'lucide-react';
 
 export function AppSidebar() {
     const { state, isMobile } = useSidebar();
 
     return (
-        <Sidebar side="left" collapsible="icon">
+        <Sidebar side="left" collapsible="icon" variant="sidebar">
             <SidebarContent className="pt-4 md:pt-10">
                 <SidebarGroup>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem key={'dashboard'}>
-                                <SidebarMenuButton asChild>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={'Dashboard'}
+                                >
                                     <Link href={'/dashboard'}>
                                         <LayoutDashboard />
                                         Dashboard
@@ -44,7 +53,7 @@ export function AppSidebar() {
                                     defaultOpen
                                 >
                                     <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton>
+                                        <SidebarMenuButton tooltip={'Trips'}>
                                             <Bus />
                                             <span className="text-md">
                                                 Trips
@@ -87,48 +96,6 @@ export function AppSidebar() {
                                             </SidebarMenuSub>
                                         </CollapsibleContent>
                                     </CollapsibleContent>
-
-                                    {/* <SidebarMenuItem>
-                                        <CollapsibleTrigger asChild>
-                                            <SidebarMenuButton>
-                                                <Bus />
-                                                Trips
-                                                <ChevronDown />
-                                            </SidebarMenuButton>
-                                        </CollapsibleTrigger>
-                                        <CollapsibleContent>
-                                            <SidebarMenuSub>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton
-                                                        asChild
-                                                        key={'Locations'}
-                                                    >
-                                                        <Link
-                                                            href={'/locations'}
-                                                        >
-                                                            <span>
-                                                                {'Locations'}
-                                                            </span>
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                                <SidebarMenuSubItem>
-                                                    <SidebarMenuSubButton
-                                                        asChild
-                                                        key={'Proposals'}
-                                                    >
-                                                        <Link
-                                                            href={'/invoices'}
-                                                        >
-                                                            <span>
-                                                                {'Proposals'}
-                                                            </span>
-                                                        </Link>
-                                                    </SidebarMenuSubButton>
-                                                </SidebarMenuSubItem>
-                                            </SidebarMenuSub>
-                                        </CollapsibleContent>
-                                    </SidebarMenuItem> */}
                                 </Collapsible>
                             </SidebarMenuItem>
 
@@ -138,7 +105,7 @@ export function AppSidebar() {
                                     className="group/collapsible"
                                 >
                                     <CollapsibleTrigger asChild>
-                                        <SidebarMenuButton>
+                                        <SidebarMenuButton tooltip={'Billing'}>
                                             <Receipt />
                                             <span className="text-md">
                                                 Billing
@@ -171,7 +138,7 @@ export function AppSidebar() {
                                                     key={'orders'}
                                                 >
                                                     <Link href={'/orders'}>
-                                                        Orders
+                                                        <span>Orders</span>
                                                     </Link>
                                                 </SidebarMenuSubButton>
                                             </SidebarMenuSubItem>
@@ -194,12 +161,47 @@ export function AppSidebar() {
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            <SidebarMenuItem key={'dashboard'}>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={'Privacy Policy'}
+                                >
+                                    <Link href={route('privacyPolicy')}>
+                                        <BookOpenText />
+                                        <span className="text-sm">
+                                            Privacy Policy
+                                        </span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                        <SidebarMenu>
+                            <SidebarMenuItem key={'dashboard'}>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip={'Terms Of Service'}
+                                >
+                                    <Link href={route('termsOfService')}>
+                                        <BookOpenText />
+                                        <span className="text-sm">
+                                            Terms Of Service
+                                        </span>
+                                    </Link>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
                 {state === 'expanded' && (
                     <div className="flex justify-center">
                         <span className="text-[10px]">
-                            Copyright &copy; HEROES Malaysia
+                            &copy; HEROES Malaysia
                         </span>
                     </div>
                 )}

@@ -163,7 +163,7 @@ const Proposal = ({ product }: any) => {
                     </DialogHeader>
                     <div>
                         <Input
-                            placeholder="e.g. School - Month - Year"
+                            placeholder="e.g. YourSchool_MonthYear"
                             onChange={(e) => setProposalName(e.target.value)}
                         ></Input>
                     </div>

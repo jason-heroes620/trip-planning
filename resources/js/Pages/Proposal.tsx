@@ -21,6 +21,16 @@ import {
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
+import {
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -55,7 +65,7 @@ const ProposalView = ({
     const { props } = usePage();
     const previousUrl = props.previousUrl || '/';
 
-    const { data, setData } = useForm({
+    const { data, setData, errors, processing } = useForm({
         proposal_id: proposal.proposal_id,
         proposal_name: proposal.proposal_name,
         proposal_date: proposal.proposal_date,
@@ -67,9 +77,7 @@ const ProposalView = ({
         special_request: proposal.special_request,
         markup_per_student: proposal.markup_per_student,
     });
-    const { disabledDays, loading, error } = useDisabledDays(
-        proposal.proposal_id,
-    );
+    const { disabledDays } = useDisabledDays(proposal.proposal_id);
 
     const libraries = useMemo(() => ['places'], []);
     const { isLoaded } = useLoadScript({
@@ -299,27 +307,37 @@ const ProposalView = ({
         let travelLocations = proposal_product.map((p: any) => {
             return { location: p.location.google_location, stopover: true };
         });
-
         setLocations(travelLocations);
 
         if (proposal.travel_duration === 0 || proposal.travel_distance === 0) {
             calculateDistances(travelLocations);
         }
-        // let child = product_prices.find((p: any) => {
-        //     return p.attribute === 'child';
-        // });
 
-        // let teacher = product_prices.find((p: any) => {
-        //     return p.attribute === 'teacher';
-        // });
-
-        // calculateTotal(proposal_item, child.qty, teacher.qty);
         calculateTotal(proposal_item, data.qty_student, data.qty_teacher);
     }, [travelInfo.travelDistance]);
 
-    const handleSubmitDraft = (e: any) => {
+    const checkMinAndMaxQty = async () => {
+        let qualify = true;
+        proposal_product.map((p: any) => {
+            if (
+                p.location.min_quantity > data.qty_student ||
+                p.location.max_quantity < data.qty_student
+            )
+                qualify = false;
+        });
+        if (!qualify) {
+            toast({
+                variant: 'destructive',
+                title: 'Min / Max pax limit!',
+                description:
+                    'There is a min & max pax limit to your location and you might not have meet the requirements. ',
+            });
+        }
+    };
+
+    const handleSubmitDraft = async (e: any) => {
         e.preventDefault();
-        setOpen(false);
+        await checkMinAndMaxQty();
         const draft = {
             proposal_id: data.proposal_id,
             proposal_name: data.proposal_name,
@@ -343,32 +361,55 @@ const ProposalView = ({
                         'There was an issue with update. Please check your information and try again',
                 });
             }
+            setOpen(false);
         });
     };
 
     const handleRequestQuotation = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
-        setOpenRequestQuotation(false);
-        axios
-            .post(route('quotation.create'), {
-                proposal_id: proposal.proposal_id,
-                subTotal: productTotal + optionTotal,
-                total: total,
-            })
-            .then((resp) => {
-                if (resp.data.success) {
-                    toast({
-                        description: resp.data.success,
+
+        const draft = {
+            proposal_id: data.proposal_id,
+            proposal_name: data.proposal_name,
+            proposal_date: data.proposal_date,
+            additional_price: data.additional_price,
+            qty_student: data.qty_student,
+            qty_teacher: data.qty_teacher,
+            proposal_items: proposalItems,
+            special_request: data.special_request,
+        };
+        axios.post(route('proposal.update'), draft).then((resp) => {
+            if (resp.data.success) {
+                axios
+                    .post(route('quotation.create'), {
+                        proposal_id: proposal.proposal_id,
+                        subTotal: productTotal + optionTotal,
+                        total: total,
+                    })
+                    .then((resp) => {
+                        if (resp.data.success) {
+                            toast({
+                                description: resp.data.success,
+                            });
+                            setData('proposal_status', 1);
+                        } else {
+                            toast({
+                                variant: 'destructive',
+                                title: 'Quotation request error!',
+                                description: resp.data.failed,
+                            });
+                        }
                     });
-                    setData('proposal_status', 1);
-                } else {
-                    toast({
-                        variant: 'destructive',
-                        title: 'Quotation request error!',
-                        description: resp.data.failed,
-                    });
-                }
-            });
+            } else {
+                toast({
+                    variant: 'destructive',
+                    title: resp.data.failed + '!',
+                    description:
+                        'There was an issue with your request. Please save your changes before requesting.',
+                });
+            }
+            setOpenRequestQuotation(false);
+        });
     };
 
     if (!isLoaded) return <div>Loading...</div>;
@@ -531,9 +572,10 @@ const ProposalView = ({
                                     handleQtyChange(
                                         e,
                                         'student',
-                                        data.qty_teacher,
+                                        data.qty_student,
                                     );
                                 }}
+                                min={1}
                                 maxLength={4}
                                 type="number"
                                 disabled={
@@ -553,9 +595,10 @@ const ProposalView = ({
                                     handleQtyChange(
                                         e,
                                         'teacher',
-                                        data.qty_student,
+                                        data.qty_teacher,
                                     );
                                 }}
+                                min={1}
                                 maxLength={4}
                                 type="number"
                                 disabled={
@@ -666,6 +709,55 @@ const ProposalView = ({
                                                         .product_description,
                                                 )}
                                             </span>
+                                            <Dialog>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="link">
+                                                        Show More..
+                                                    </Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="max-h-screen max-w-[425px] overflow-y-scroll md:max-w-[600px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle></DialogTitle>
+                                                        <DialogDescription>
+                                                            <div>
+                                                                <span className="font-bold underline">
+                                                                    Description
+                                                                </span>
+                                                                <div className="ulDescription py-2">
+                                                                    {renderHTML(
+                                                                        p
+                                                                            .location
+                                                                            .product_description,
+                                                                    )}
+                                                                </div>
+                                                                <div className="pt-4">
+                                                                    <span className="font-bold underline">
+                                                                        Activities
+                                                                    </span>
+                                                                </div>
+                                                                <div className="ulDescription py-2">
+                                                                    {renderHTML(
+                                                                        p
+                                                                            .location
+                                                                            .product_activities,
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="flex items-center space-x-2"></div>
+                                                    <DialogFooter className="sm:justify-start">
+                                                        <DialogClose asChild>
+                                                            <Button
+                                                                type="button"
+                                                                variant="secondary"
+                                                            >
+                                                                Close
+                                                            </Button>
+                                                        </DialogClose>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </Dialog>
                                         </div>
 
                                         <div className="flex flex-col py-2">
@@ -827,13 +919,18 @@ const ProposalView = ({
                         id="special_request"
                         name="special_request"
                         value={data.special_request ?? ''}
-                        className="mt-1 block w-full"
+                        className="mt-1 block w-full border-1"
                         onChange={(e) => {
                             setData('special_request', e.target.value);
                         }}
                         rows={4}
                         disabled={proposal.proposal_status > 1 ? true : false}
                     />
+                </div>
+                <div>
+                    <span className="text-sm">
+                        * All orders are subject to 10% administration fee.
+                    </span>
                 </div>
                 <hr />
                 <div className="flex justify-end gap-4 py-2">
@@ -911,23 +1008,19 @@ const ProposalView = ({
                             {formattedNumber(total)}
                         </span>
                     </div>
-                    {/* <div className="flex justify-end">
-                        <span>
-                            {proposal.proposal_status < 2 ? 'estimated ' : ''}
-                            price per pax{' '}
-                            {formattedNumber(total / data.qty_student)}
-                        </span>
-                    </div> */}
                 </div>
                 {proposal.proposal_status === 3 && (
                     <div>
-                        <span>
-                            Costing Per Student:{' '}
+                        <span>Costing Per Student: </span>
+                        <span className="font-bold">
                             {formattedNumber(
-                                (total +
-                                    markupPerStudent * proposal.qty_student) /
-                                    (proposal.qty_student +
-                                        proposal.qty_teacher),
+                                Math.round(
+                                    (total +
+                                        markupPerStudent *
+                                            proposal.qty_student) /
+                                        (proposal.qty_student +
+                                            proposal.qty_teacher),
+                                ),
                             )}
                         </span>
                     </div>
@@ -956,6 +1049,7 @@ const ProposalView = ({
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
                                     onClick={(e) => handleSubmitDraft(e)}
+                                    disabled={processing}
                                 >
                                     Continue
                                 </AlertDialogAction>

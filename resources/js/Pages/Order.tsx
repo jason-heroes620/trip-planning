@@ -1,3 +1,4 @@
+import Checkbox from '@/components/Checkbox';
 import InputLabel from '@/components/InputLabel';
 import Loading from '@/components/loading';
 import {
@@ -12,11 +13,22 @@ import {
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import UserLayout from '@/layout/UserLayout';
 import { formattedNumber } from '@/util/formatNumber';
 import { Link, router } from '@inertiajs/react';
 import moment from 'moment';
 import { useState } from 'react';
+import TOSPage from './TOSPage';
 
 const Order = ({
     auth,
@@ -40,6 +52,7 @@ const Order = ({
         router.visit(route('payment.process', order.order_id));
     };
 
+    const [tacUnChecked, setTacUnchecked] = useState(true);
     const paymentDialog = () => {
         return (
             <AlertDialog open={open} onOpenChange={setOpen}>
@@ -55,12 +68,58 @@ const Order = ({
                     <AlertDialogHeader>
                         <AlertDialogTitle></AlertDialogTitle>
                         <AlertDialogDescription>
-                            Confirm to make payment?
+                            <div className="flex flex-col">
+                                <span> Confirm to make payment?</span>
+                                <div className="flex items-center gap-2">
+                                    <Checkbox
+                                        onChange={() =>
+                                            setTacUnchecked(!tacUnChecked)
+                                        }
+                                    />
+                                    <span>
+                                        I have read and agree to the
+                                        {/* <Link
+                                            href={route('termsOfService')}
+                                            target="_blank"
+                                            className="underline"
+                                        >
+                                            Terms & Conditions
+                                        </Link> */}
+                                    </span>
+                                    <Dialog>
+                                        <DialogTrigger asChild>
+                                            <Button variant="link">
+                                                Terms & Conditions
+                                            </Button>
+                                        </DialogTrigger>
+                                        <DialogContent className="max-h-screen max-w-[425px] overflow-y-scroll md:max-w-[600px]">
+                                            <DialogHeader>
+                                                <DialogTitle></DialogTitle>
+                                                <DialogDescription>
+                                                    <TOSPage />
+                                                </DialogDescription>
+                                            </DialogHeader>
+                                            <div className="grid gap-4 py-4"></div>
+                                            <DialogFooter>
+                                                <DialogClose asChild>
+                                                    <Button
+                                                        type="button"
+                                                        variant="secondary"
+                                                    >
+                                                        Close
+                                                    </Button>
+                                                </DialogClose>
+                                            </DialogFooter>
+                                        </DialogContent>
+                                    </Dialog>
+                                </div>
+                            </div>
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
                         <AlertDialogCancel>Cancel</AlertDialogCancel>
                         <AlertDialogAction
+                            disabled={loading || tacUnChecked ? true : false}
                             onClick={(e) => handleMakePayment(e)}
                         >
                             Continue
@@ -131,11 +190,11 @@ const Order = ({
                                     />
 
                                     {order.order_status === 0 ? (
-                                        <span className="py-4 font-bold">
+                                        <span className="py-4 font-bold text-orange-600">
                                             Pending Payment
                                         </span>
                                     ) : order.order_status === 1 ? (
-                                        <span className="py-4 font-bold">
+                                        <span className="py-4 font-bold text-orange-600">
                                             Pending Payment
                                         </span>
                                     ) : order.order_status === 2 ? (

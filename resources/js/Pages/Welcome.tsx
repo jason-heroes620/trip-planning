@@ -1,4 +1,5 @@
 import ApplicationLogo from '@/components/ApplicationLogo';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
@@ -7,69 +8,75 @@ export default function Welcome({
     auth,
     currentYear,
 }: PageProps<{ currentYear: string }>) {
-    const handleImageError = () => {
-        document
-            .getElementById('screenshot-container')
-            ?.classList.add('!hidden');
-        document.getElementById('docs-card')?.classList.add('!row-span-1');
-        document
-            .getElementById('docs-card-content')
-            ?.classList.add('!flex-row');
-        document.getElementById('background')?.classList.add('!hidden');
-    };
-
     return (
         <>
-            <Head title="Welcome" />
+            <Head title="HEROES - Schools" />
             <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <ApplicationLogo size={146} />
-                            </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
+                <div className="flex flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
+                    <header className="flex w-full flex-row items-center justify-between px-4 shadow-lg md:px-10">
+                        <div className="flex lg:col-start-2 lg:justify-center">
+                            <ApplicationLogo size={70} />
+                        </div>
+                        <nav className="-mx-3 flex flex-1 justify-end">
+                            {auth.user ? (
+                                <Link
+                                    href={route('dashboard')}
+                                    className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                >
+                                    Dashboard
+                                </Link>
+                            ) : (
+                                <>
                                     <Link
-                                        href={route('dashboard')}
+                                        href={route('login')}
                                         className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
                                     >
-                                        Dashboard
+                                        Log in
                                     </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Log in
-                                        </Link>
-                                        <Link
-                                            href={route('school.register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Register
-                                        </Link>
-                                    </>
-                                )}
-                            </nav>
-                        </header>
-
-                        <main className="mt-6">
+                                    <Link
+                                        href={route('school.register')}
+                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
+                                    >
+                                        Register
+                                    </Link>
+                                </>
+                            )}
+                        </nav>
+                    </header>
+                    <div className="w-full">
+                        <main className="">
                             <div className="flex flex-row">
-                                <Card className="px-4 py-2">
+                                <Card className="w-full rounded-none bg-[#B0CAD4] px-4 py-6">
                                     <CardHeader>
-                                        <CardTitle>
-                                            Create Your School Account
+                                        <CardTitle className="text-4xl">
+                                            Explore the Ultimate
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="flex justify-end">
-                                            <Link
-                                                href={route('school.register')}
-                                            >
-                                                Click Here!
-                                            </Link>
+                                        <div className="flex flex-col justify-start">
+                                            <div className="w-full px-6 md:w-[50%]">
+                                                <span className="text-justify">
+                                                    Unlock the sec rets to
+                                                    seamless school trip
+                                                    planning with our
+                                                    comprehensice self-planning
+                                                    platform. Discover diverse
+                                                    locations and create lasting
+                                                    memories for your students.
+                                                </span>
+                                            </div>
+                                            <div className="w-[50%] px-6 py-4 md:w-full">
+                                                <span>
+                                                    Elevate Your School Trip
+                                                </span>
+                                            </div>
+                                            <div className="w-[50%] px-6">
+                                                <Button className="rounded-2xl bg-[#0E3051] px-6 py-2 text-white hover:cursor-pointer">
+                                                    <Link href={route('login')}>
+                                                        Plan Now
+                                                    </Link>
+                                                </Button>
+                                            </div>
                                         </div>
                                     </CardContent>
                                 </Card>

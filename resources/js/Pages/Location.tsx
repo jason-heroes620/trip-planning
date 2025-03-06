@@ -128,7 +128,9 @@ const Location = () => {
                                 Descriptions
                             </span>
                         </div>
-                        <div>{renderHTML(product.product_description)}</div>
+                        <div className="ulDescription">
+                            {renderHTML(product.product_description)}
+                        </div>
                     </div>
 
                     {product.product_activities && (
@@ -138,7 +140,7 @@ const Location = () => {
                                     Activities
                                 </span>
                             </div>
-                            <div className="list-disc">
+                            <div className="ulDescription">
                                 {renderHTML(product.product_activities)}
                             </div>
                         </div>

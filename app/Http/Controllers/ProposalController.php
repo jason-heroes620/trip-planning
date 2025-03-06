@@ -319,6 +319,7 @@ class ProposalController extends Controller
             // $p['image'] = base64_encode(file_get_contents($location['product_image']));
             $p['product'] = $location['product_name'];
             $p['description'] = $location['product_description'];
+            $p['activities'] = $location['product_activities'];
             $product_images = LocationImages::select(['image_path'])->where('product_id', $p['product_id'])->get();
         }
 

@@ -32,11 +32,12 @@
         h2 {
             color: #333;
             text-align: center;
+            font-size: 18px;
         }
 
-        p {
+        /* p {
             font-size: 14px;
-        }
+        } */
 
         img {
             width: 150px;
@@ -66,18 +67,26 @@
 
     <div>
         @foreach ($products as $product)
-        <p>
+        <span>
             <strong>{{ $product->product}}</strong>
-        </p>
-        <p class=" text-align: justify">
+        </span>
+        <br>
+        <p><span><strong><u>Desctiption</u></strong> </span></p>
+        <p>
             {!! html_entity_decode($product->description) !!}
         </p>
+        <br>
+        <p>
+            <span><strong><u>Activities</u></strong></span>
+        </p>
+
         <p>
             {!! html_entity_decode($product->activities) !!}
         </p>
         @endforeach
     </div>
-
+    <br>
+    <p></p>
     <div>
         <span><b>Estimated Cost:</b></span>
         <table class="table">

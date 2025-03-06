@@ -93,6 +93,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/terms_of_service', function () {
+        return Inertia::render('TermsOfService');
+    })->name('termsOfService');
+
+    Route::get('/privacy_policy', function () {
+        return Inertia::render('PrivacyPolicy');
+    })->name('privacyPolicy');
 });
 
 require __DIR__ . '/auth.php';

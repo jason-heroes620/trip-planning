@@ -1,5 +1,5 @@
 import forms from '@tailwindcss/forms';
-import defaultTheme from 'tailwindcss/defaultTheme';
+import { defaultTheme, fontFamily } from 'tailwindcss/defaultTheme';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -14,7 +14,8 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                quicksand: ['Quicksand', ...defaultTheme.fontFamily.sans],
+                sans: ['Figtree', ...fontFamily.sans],
             },
             borderRadius: {
                 lg: 'var(--radius)',

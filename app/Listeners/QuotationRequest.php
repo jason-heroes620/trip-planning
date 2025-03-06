@@ -25,8 +25,11 @@ class QuotationRequest
         Log::info('Quotation Requested, ' . 'school: ' . $event->school['school_name']);
         $emails = ['felicia.n@heroes.my', 'afiq.a@heroes.my'];
         $bccEmail = ['jason.w@heroes.my'];
-        Mail::to($emails)
-            ->bcc($bccEmail)
-            ->send(new QuotationRequestEmail($event->school));
+
+        foreach ($emails as $recipient) {
+            Mail::to($recipient)
+                ->bcc($bccEmail)
+                ->send(new QuotationRequestEmail($event->school));
+        }
     }
 }
