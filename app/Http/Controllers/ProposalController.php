@@ -315,8 +315,8 @@ class ProposalController extends Controller
             $file_name = explode('/', $location['product_image']);
             $image = $file_name[sizeof($file_name) - 1];
             $p['location'] = $location;
-            $p['url'] = (new LocationController)->getImage($location['product_image']);
-            $p['image'] = base64_encode(file_get_contents($location['product_image']));
+            // $p['url'] = (new LocationController)->getImage($location['product_image']);
+            // $p['image'] = base64_encode(file_get_contents($location['product_image']));
             $p['product'] = $location['product_name'];
             $p['description'] = $location['product_description'];
             $product_images = LocationImages::select(['image_path'])->where('product_id', $p['product_id'])->get();
