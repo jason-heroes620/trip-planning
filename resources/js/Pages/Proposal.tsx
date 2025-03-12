@@ -187,7 +187,10 @@ const ProposalView = ({
             item_id: m.item_id,
             unit_price: m.unit_price,
             uom: m.uom,
-            item_qty: m.item_type === 'TRANSPORTATION' ? 1 : data.qty_student,
+            item_qty:
+                m.item_type === 'TRANSPORTATION' || m.item_type === 'GUIDE'
+                    ? 1
+                    : data.qty_student,
             type: m.item_type,
             sales_tax: m.sales_tax,
             additional_unit_cost: m.additional_unit_cost,
@@ -250,10 +253,15 @@ const ProposalView = ({
         let student = 0;
         let teacher = 0;
 
-        student = attribute === 'student' ? parseInt(e.target.value) : qty;
-        teacher = attribute === 'teacher' ? parseInt(e.target.value) : qty;
-        setData('qty_student', student);
-        setData('qty_teacher', teacher);
+        if (attribute === 'student') {
+            setData('qty_student', parseInt(e.target.value));
+            student = parseInt(e.target.value);
+            teacher = data.qty_teacher;
+        } else {
+            setData('qty_teacher', parseInt(e.target.value));
+            teacher = parseInt(e.target.value);
+            student = data.qty_student;
+        }
 
         calculateTotal(proposalItems, student, teacher);
     };
@@ -341,7 +349,7 @@ const ProposalView = ({
         }
     };
 
-    const handleSubmitDraft = async (e: any) => {
+    const handleSaveDraft = async (e: any) => {
         e.preventDefault();
         await checkMinAndMaxQty();
         const draft = {
@@ -751,37 +759,33 @@ const ProposalView = ({
                                                         Show More..
                                                     </Button>
                                                 </DialogTrigger>
-                                                <DialogContent className="max-h-screen max-w-[425px] overflow-y-scroll md:max-w-[600px]">
+                                                <DialogContent className="max-h-screen max-w-[425px] overflow-y-scroll md:max-w-[620px]">
                                                     <DialogHeader>
                                                         <DialogTitle></DialogTitle>
-                                                        <DialogDescription>
-                                                            <div className="py-4">
-                                                                <span className="font-bold underline">
-                                                                    Description
-                                                                </span>
-                                                                <div className="ulDescription py-2 text-justify">
-                                                                    {renderHTML(
-                                                                        p
-                                                                            .location
-                                                                            .product_description,
-                                                                    )}
-                                                                </div>
-                                                                <div className="pt-4">
-                                                                    <span className="font-bold underline">
-                                                                        Activities
-                                                                    </span>
-                                                                </div>
-                                                                <div className="ulDescription py-2 text-justify">
-                                                                    {renderHTML(
-                                                                        p
-                                                                            .location
-                                                                            .product_activities,
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        </DialogDescription>
+                                                        <DialogDescription></DialogDescription>
                                                     </DialogHeader>
-                                                    <div className="flex items-center space-x-2"></div>
+                                                    <div className="py-4">
+                                                        <span className="font-bold underline">
+                                                            Description
+                                                        </span>
+                                                        <div className="ulDescription py-2 text-justify">
+                                                            {renderHTML(
+                                                                p.location
+                                                                    .product_description,
+                                                            )}
+                                                        </div>
+                                                        <div className="pt-4">
+                                                            <span className="font-bold underline">
+                                                                Activities
+                                                            </span>
+                                                        </div>
+                                                        <div className="ulDescription py-2 text-justify">
+                                                            {renderHTML(
+                                                                p.location
+                                                                    .product_activities,
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                     <DialogFooter className="justify-end">
                                                         <DialogClose asChild>
                                                             <Button
@@ -1084,7 +1088,7 @@ const ProposalView = ({
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
-                                    onClick={(e) => handleSubmitDraft(e)}
+                                    onClick={(e) => handleSaveDraft(e)}
                                     disabled={processing}
                                 >
                                     Continue
@@ -1106,16 +1110,16 @@ const ProposalView = ({
                                         : true
                                 }
                             >
-                                Request Quotation
+                                Request Order
                             </Button>
                         </AlertDialogTrigger>
                         <AlertDialogContent>
                             <AlertDialogHeader>
                                 <AlertDialogTitle></AlertDialogTitle>
                                 <AlertDialogDescription>
-                                    Confirm to request for a quotation? Once
-                                    confirmed, you will not be able to make any
-                                    changes to the proposal.
+                                    Confirm to request order? Once confirmed,
+                                    you will not be able to make any changes to
+                                    the proposal.
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
