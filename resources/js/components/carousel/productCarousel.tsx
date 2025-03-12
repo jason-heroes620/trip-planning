@@ -26,7 +26,7 @@ const ProductCarousel = ({ products }: any) => {
                         key={p.id}
                     >
                         <Link href={route('location.view', p.id)}>
-                            <Card className="h-[350px]">
+                            <Card className="h-[350px] min-w-[180px]">
                                 <CardContent className="flex">
                                     <div className="flex h-full w-full flex-col">
                                         <img

@@ -53,9 +53,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // trips
-    Route::get('/locations', [LocationController::class, 'index'])->name('locations.index');
+    // locations
+    Route::get('/locations/{search?}/{filters?}', [LocationController::class, 'index'])->name('locations.index');
     Route::get('/location/{id}', [LocationController::class, 'view'])->name('location.view');
+    Route::get('/locations_autocomplete', [LocationController::class, 'autocomplete'])->name('locations.autocomplete');
 
     // billing
     Route::get('/quotations', [QuotationController::class, 'index'])->name('quotation.index');

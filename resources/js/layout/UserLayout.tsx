@@ -16,8 +16,9 @@ import { useState } from 'react';
 
 const withNotification = 0;
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
-    const defaultOpen = Cookies.get('sidebar:state') ? true : false;
+    const defaultOpen = Cookies.get('sidebar_state') ? true : false;
     const [loading, setLoading] = useState(false);
+
     router.on('start', (event) => {
         setLoading(true);
     });
@@ -27,7 +28,6 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
         if (event.detail.visit.completed) setLoading(false);
     });
 
-    const [collapsed, setCollapsed] = useState(false);
     const [showingNavigationDropdown, setShowingNavigationDropdown] =
         useState(false);
     return (

@@ -755,11 +755,11 @@ const ProposalView = ({
                                                     <DialogHeader>
                                                         <DialogTitle></DialogTitle>
                                                         <DialogDescription>
-                                                            <div>
+                                                            <div className="py-4">
                                                                 <span className="font-bold underline">
                                                                     Description
                                                                 </span>
-                                                                <div className="ulDescription py-2">
+                                                                <div className="ulDescription py-2 text-justify">
                                                                     {renderHTML(
                                                                         p
                                                                             .location
@@ -771,7 +771,7 @@ const ProposalView = ({
                                                                         Activities
                                                                     </span>
                                                                 </div>
-                                                                <div className="ulDescription py-2">
+                                                                <div className="ulDescription py-2 text-justify">
                                                                     {renderHTML(
                                                                         p
                                                                             .location
@@ -782,7 +782,7 @@ const ProposalView = ({
                                                         </DialogDescription>
                                                     </DialogHeader>
                                                     <div className="flex items-center space-x-2"></div>
-                                                    <DialogFooter className="sm:justify-start">
+                                                    <DialogFooter className="justify-end">
                                                         <DialogClose asChild>
                                                             <Button
                                                                 type="button"
@@ -955,7 +955,7 @@ const ProposalView = ({
                         id="special_request"
                         name="special_request"
                         value={data.special_request ?? ''}
-                        className="mt-1 block w-full border-1"
+                        className="mt-1 block w-full border-1 px-2 py-2"
                         onChange={(e) => {
                             setData('special_request', e.target.value);
                         }}

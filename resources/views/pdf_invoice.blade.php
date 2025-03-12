@@ -25,8 +25,8 @@
             font-family: Arial, sans-serif;
         }
 
-        div {
-            padding: 0px 40px 0px 40px;
+        .content {
+            padding: 10px 40px 10px 40px;
         }
 
         h2 {
@@ -34,10 +34,6 @@
             text-align: center;
             font-size: 18px;
         }
-
-        /* p {
-            font-size: 14px;
-        } */
 
         img {
             width: 150px;
@@ -49,72 +45,65 @@
             border: #333;
         }
 
-        tablerow {
-            border: #333;
-            border-width: 1px;
+        .justify {
+            text-align: justify;
         }
     </style>
 </head>
 
 <body>
-    <div>
+    <div class="content">
+
         <img src="data:image/png;base64,{{ $schoolLogo }} " alt="">
-    </div>
-    <h2>{{ $title }}</h2>
-    <div>
-        <p><strong>Proposed Visitation Date:</strong> {{ $date }}</p>
-    </div>
 
-    <div>
-        @foreach ($products as $product)
-        <span>
-            <strong>{{ $product->product}}</strong>
-        </span>
+        <h2>{{ $title }}</h2>
+        <div>
+            <p><strong>Proposed Visitation Date:</strong> {{ $date }}</p>
+        </div>
+        <p></p>
+        <div>
+            @foreach ($products as $product)
+            <span>
+                <strong>{{ $product->product}}</strong>
+            </span>
+            <br>
+            <div class=" justify">
+                <span>
+                    {!! html_entity_decode($product->description) !!}
+                </span>
+            </div>
+            <br>
+            <p>
+                <span style="font-size: 14px"><strong><u>Activities</u></strong></span>
+            </p>
+            <div class="justify">
+                <span>
+                    {!! html_entity_decode($product->activities) !!}
+                </span>
+            </div>
+
+            @endforeach
+        </div>
         <br>
-        <p><span><strong><u>Desctiption</u></strong> </span></p>
-        <p>
-            {!! html_entity_decode($product->description) !!}
-        </p>
+        <p></p>
+        <div>
+            <span><b>Estimated Cost:</b></span>
+            <table class="table">
+                <tr class="tablerow">
+                    <td>Costing Per Student: </td>
+                    <td>RM{{ $cost_per_student }}</td>
+                </tr>
+            </table>
+        </div>
         <br>
-        <p>
-            <span><strong><u>Activities</u></strong></span>
-        </p>
-
-        <p>
-            {!! html_entity_decode($product->activities) !!}
-        </p>
-        @endforeach
+        <br>
+        <div>
+            @foreach ($images as $img)
+            <img src="data:image/png;base64,{{ $img->image }}" alt="">
+            @endforeach
+        </div>
     </div>
-    <br>
-    <p></p>
-    <div>
-        <span><b>Estimated Cost:</b></span>
-        <table class="table">
-            <tr class="tablerow">
-                <td>Costing Per Student: </td>
-                <td>RM{{ $cost_per_student }}</td>
-            </tr>
-        </table>
     </div>
-    <br>
-    <br>
-    <div>
-        @foreach ($images as $img)
-        <img src="data:image/png;base64,{{ $img->image }}" alt="">
-        @endforeach
-    </div>
-    <!-- <table>
-        @foreach ($products as $product)
-        <tr>
-            <td>
-                <img src=" data:image/png;base64,{{ $product->image }}" alt="">
-        </td>
-        <td>
-
-        </td>
-        </tr>
-        @endforeach
-        </table> -->
 
 </body>
 
