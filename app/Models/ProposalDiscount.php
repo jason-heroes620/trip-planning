@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class QuotationDiscount extends Model
+class ProposalDiscount extends Model
 {
     protected $table = "discount";
 }

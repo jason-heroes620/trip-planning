@@ -12,7 +12,7 @@ use App\Models\ProposalItem;
 use App\Models\ProposalProduct;
 use App\Models\ProposalProductPrice;
 use App\Models\Quotation;
-use App\Models\QuotationDiscount;
+use App\Models\ProposalDiscount;
 use App\Models\School;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -56,7 +56,7 @@ class InvoiceController extends Controller
         $orderTotal = OrderTotal::where('order_id', $order['order_id'])->orderBy('sort_order', 'asc')->get();
 
         $school = School::where('user_id', $proposal['user_id'])->first();
-        $payment = PaymentDetails::where("order_no", $order["order_no"])->first();
+        $payment = PaymentDetails::where("order_no", $order["order_no"])->where('bank_ref', '!=', '')->first();
 
         return Inertia::render(
             'Invoice',

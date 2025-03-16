@@ -33,7 +33,6 @@ import TOSPage from './TOSPage';
 const Order = ({
     auth,
     order,
-    quotation,
     proposal,
     proposalProduct,
     proposalItems,
@@ -199,7 +198,7 @@ const Order = ({
                                         </span>
                                     ) : order.order_status === 2 ? (
                                         <span className="py-4 font-bold text-green-800">
-                                            Payment Made
+                                            Paid
                                         </span>
                                     ) : order.order_status === 3 ? (
                                         <span className="py-4 font-bold text-red-800">
@@ -216,23 +215,6 @@ const Order = ({
                         <hr />
                         <div className="">
                             <div className="flex flex-col py-2 md:grid md:grid-cols-2">
-                                <div className="px-2">
-                                    <InputLabel
-                                        htmlFor="quotatio_no"
-                                        value="Quotation No."
-                                        className="py-2 font-bold"
-                                    />
-                                    <span className="py-4">
-                                        <Link
-                                            href={route(
-                                                'quotation.view',
-                                                quotation.quotation_id,
-                                            )}
-                                        >
-                                            {quotation.quotation_no}
-                                        </Link>
-                                    </span>
-                                </div>
                                 <div className="px-2">
                                     <InputLabel
                                         htmlFor="proposal_name"
@@ -299,117 +281,104 @@ const Order = ({
                                     </span>
                                 </div>
                             </div>
-                            {proposalProduct.map((product: any, index: any) => {
-                                return (
-                                    <div
-                                        className="flex flex-col py-4 md:grid md:grid-cols-6"
-                                        key={index}
-                                    >
-                                        <div className="flex md:col-span-3 md:row-span-2">
-                                            {product.product.product_name}
-                                        </div>
 
-                                        {product.product_price.map((p: any) => {
-                                            return (
-                                                <div
-                                                    className="flex flex-row justify-between md:col-span-3"
-                                                    key={p.product_price_id}
-                                                >
-                                                    <div className="flex md:col-span-1 md:justify-end">
-                                                        {p.qty}
-                                                    </div>
-                                                    <div className="flex justify-end md:col-span-1">
-                                                        {p.unit_price}
-                                                    </div>
-                                                    <div className="flex justify-end md:col-span-1">
-                                                        {(
-                                                            p.qty * p.unit_price
-                                                        ).toFixed(2)}
-                                                    </div>
+                            {order.order_type === 'D' && (
+                                <div className="flex flex-col py-4 md:grid md:grid-cols-6">
+                                    <div className="flex md:col-span-3">
+                                        <span>Deposit</span>
+                                    </div>
+
+                                    <div className="flex flex-row justify-between md:col-span-3">
+                                        <div className="flex justify-end md:col-span-1 md:grid">
+                                            <span>1</span>
+                                        </div>
+                                        <div className="flex justify-end md:col-span-1 md:grid">
+                                            <span>{order.order_amount}</span>
+                                        </div>
+                                        <div className="flex md:col-span-1 md:grid">
+                                            <span>{order.order_amount}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            {order.order_type !== 'D' &&
+                                proposalProduct.map(
+                                    (product: any, index: any) => {
+                                        return (
+                                            <div
+                                                className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                                key={index}
+                                            >
+                                                <div className="flex md:col-span-3 md:row-span-2">
+                                                    {
+                                                        product.product
+                                                            .product_name
+                                                    }
                                                 </div>
-                                            );
-                                        })}
-                                    </div>
-                                );
-                            })}
 
-                            {proposalItems.map((item: any, index: any) => {
-                                return (
-                                    <div
-                                        className="flex flex-col py-4 md:grid md:grid-cols-6"
-                                        key={index}
-                                    >
-                                        <div className="flex md:col-span-3">
-                                            {item.item_name}
-                                        </div>
+                                                {product.product_price.map(
+                                                    (p: any) => {
+                                                        return (
+                                                            <div
+                                                                className="flex flex-row justify-between md:col-span-3"
+                                                                key={
+                                                                    p.product_price_id
+                                                                }
+                                                            >
+                                                                <div className="flex md:col-span-1 md:justify-end">
+                                                                    {p.qty}
+                                                                </div>
+                                                                <div className="flex justify-end md:col-span-1">
+                                                                    {
+                                                                        p.unit_price
+                                                                    }
+                                                                </div>
+                                                                <div className="flex justify-end md:col-span-1">
+                                                                    {(
+                                                                        p.qty *
+                                                                        p.unit_price
+                                                                    ).toFixed(
+                                                                        2,
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    },
+                                                )}
+                                            </div>
+                                        );
+                                    },
+                                )}
 
-                                        <div className="flex flex-row justify-between md:col-span-3">
-                                            <div className="flex justify-end md:col-span-1 md:grid">
-                                                {item.item_qty}
+                            {order.order_type !== 'D' &&
+                                proposalItems.map((item: any, index: any) => {
+                                    return (
+                                        <div
+                                            className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                            key={index}
+                                        >
+                                            <div className="flex md:col-span-3">
+                                                {item.item_name}
                                             </div>
-                                            <div className="flex justify-end md:col-span-1 md:grid">
-                                                {item.unit_price}
-                                            </div>
-                                            <div className="flex md:col-span-1 md:grid">
-                                                {(
-                                                    item.item_qty *
-                                                    item.unit_price
-                                                ).toFixed(2)}
+
+                                            <div className="flex flex-row justify-between md:col-span-3">
+                                                <div className="flex justify-end md:col-span-1 md:grid">
+                                                    {item.item_qty}
+                                                </div>
+                                                <div className="flex justify-end md:col-span-1 md:grid">
+                                                    {item.unit_price}
+                                                </div>
+                                                <div className="flex md:col-span-1 md:grid">
+                                                    {(
+                                                        item.item_qty *
+                                                        item.unit_price
+                                                    ).toFixed(2)}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
                         </div>
-                        {/* {discount && (
-                            <div>
-                                <hr />
-                                <div className="">
-                                    <div className="flex justify-end py-2">
-                                        <span className="pr-6 font-bold">
-                                            Sub Total
-                                        </span>
-                                        <span>{formattedNumber(total)}</span>
-                                    </div>
-
-                                    <div className="flex justify-end py-2">
-                                        <div>
-                                            <span className="pr-6 font-bold">
-                                                Discount
-                                            </span>
-                                            {discount.discount_type === 'F' ? (
-                                                <span>
-                                                    {formattedNumber(
-                                                        discount.discount_amount,
-                                                    )}
-                                                </span>
-                                            ) : (
-                                                <span>
-                                                    {formattedNumber(
-                                                        (total *
-                                                            discount.discount_amount) /
-                                                            100,
-                                                    )}
-                                                </span>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        )}
-                        <hr />
-                        <div className="">
-                            <div className="flex justify-end py-4">
-                                <div>
-                                    <span className="pr-6 text-lg font-bold">
-                                        Total {'  '}
-                                    </span>
-                                    <span className="text-lg font-bold">
-                                        {formattedNumber(order.order_amount)}
-                                    </span>
-                                </div>
-                            </div>
-                        </div> */}
                     </div>
                     <hr />
                     <div className="flex flex-col gap-2 py-4">

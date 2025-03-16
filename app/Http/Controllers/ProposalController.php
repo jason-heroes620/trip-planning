@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderRequestEvent;
 use App\Models\Fees;
 use App\Models\Item;
 use App\Models\Location;
@@ -18,7 +19,8 @@ use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\Uid\UuidV8;
 use App\Models\Quotation;
-use App\Models\QuotationDiscount;
+use App\Models\ProposalDiscount;
+use App\Models\ReservedDates;
 use App\Models\School;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -57,18 +59,16 @@ class ProposalController extends Controller
             }
             $amount += $fee_amount;
 
-            $quotation = Quotation::select(['quotation_id'])->where('proposal_id', $p['proposal_id'])->first();
             $discount = 0;
-            if ($quotation) {
-                $quotation_discount = QuotationDiscount::where('quotation_id', $quotation['quotation_id'])->first();
-                if ($quotation_discount) {
-                    if ($quotation_discount['discount_type'] == "F") {
-                        $discount = $quotation_discount['discount_amount'];
-                    } else {
-                        $discount = $amount * $quotation_discount['discount_amount'] / 100;
-                    }
+            $proposal_discount = ProposalDiscount::where('proposal_id', $p['proposal_id'])->first();
+            if ($proposal_discount) {
+                if ($proposal_discount['discount_type'] == "F") {
+                    $discount = $proposal_discount['discount_amount'];
+                } else {
+                    $discount = $amount * $proposal_discount['discount_amount'] / 100;
                 }
             }
+
 
             $p['amount'] = $amount - $discount;
         }
@@ -117,29 +117,28 @@ class ProposalController extends Controller
         // $proposal['origin'] = $origin['school_name'] . ', ' . $origin['city'];
         $proposal['origin'] = $origin['google_place_name'];
 
-        $quotation = Quotation::select(['quotation_id'])->where('proposal_id', $p['proposal_id'])->first();
 
-        if ($quotation) {
-            $amount = 0;
-            foreach ($product_prices as $p) {
-                $amount += $p['qty'] * $p['unit_price'];
-            }
-            foreach ($proposal_item as $p) {
-                $amount += $p['item_qty'] * $p['unit_price'];
-            }
-            $quotation_discount = QuotationDiscount::where('quotation_id', $quotation['quotation_id'])->first();
 
-            if ($quotation_discount) {
-                if ($quotation_discount['discount_type'] == "F") {
-                    $proposal['discount_type'] = 'F';
-                    $proposal['discount_amount'] = $quotation_discount['discount_amount'];
-                } else {
-                    $proposal['discount_type'] = 'P';
-                    $proposal['discount_percentage'] = $quotation_discount['discount_amount'];
-                    $proposal['discount_amount'] = $amount * $quotation_discount['discount_amount'] / 100;
-                }
+        $amount = 0;
+        foreach ($product_prices as $p) {
+            $amount += $p['qty'] * $p['unit_price'];
+        }
+        foreach ($proposal_item as $p) {
+            $amount += $p['item_qty'] * $p['unit_price'];
+        }
+        $proposal_discount = ProposalDiscount::where('proposal_id', $req->id)->first();
+
+        if ($proposal_discount) {
+            if ($proposal_discount['discount_type'] == "F") {
+                $proposal['discount_type'] = 'F';
+                $proposal['discount_amount'] = $proposal_discount['discount_amount'];
+            } else {
+                $proposal['discount_type'] = 'P';
+                $proposal['discount_percentage'] = $proposal_discount['discount_amount'];
+                $proposal['discount_amount'] = $amount * $proposal_discount['discount_amount'] / 100;
             }
         }
+
 
         $proposal_fees = ProposalFees::where('proposal_id', $req->id)->get();
 
@@ -156,6 +155,7 @@ class ProposalController extends Controller
 
     public function update(Request $req)
     {
+        $user = $req->user();
         try {
             Proposal::where('proposal_id', $req->input('proposal_id'))->update([
                 'proposal_name' => $req->input('proposal_name'),
@@ -187,6 +187,18 @@ class ProposalController extends Controller
             }
 
             $data["success"] = "Proposal updated";
+            if ($req->input('proposal_status')) {
+                Proposal::where('proposal_id', $req->input('proposal_id'))->update([
+                    'proposal_status' => $req->input('proposal_status')
+                ]);
+                $data["request_order"] = "Your request has been submitted. Please allow 3 - 5 working days to verify and generate your order.";
+                // add event to notify admin
+
+                $proposal = Proposal::where('proposal_id', $req->input('proposal_id'))->first();
+                $school = School::where('user_id', $user->id)->first();
+
+                event(new OrderRequestEvent($school, $proposal));
+            }
 
             return response()->json($data);
         } catch (Exceptions $e) {
@@ -319,7 +331,7 @@ class ProposalController extends Controller
             // $p['image'] = base64_encode(file_get_contents($location['product_image']));
             $p['product'] = $location['product_name'];
             $p['description'] = $location['product_description'];
-            $p['activities'] = $location['product_activities'];
+            $p['activities'] = $location['product_description'];
             $product_images = LocationImages::select(['image_path'])->where('product_id', $p['product_id'])->get();
         }
 
@@ -380,5 +392,21 @@ class ProposalController extends Controller
         }
 
         return response()->json(array_unique($data));
+    }
+
+    public function getDisabledDates(Request $req)
+    {
+        $user = $req->user();
+        $reserved = [];
+        $dates = ReservedDates::whereIn('product_id', $req->input('locationId'))->where('reserved_date', '>=', now())->get();
+        foreach ($dates as $date) {
+            $product = Location::where('id', $date['product_id'])->first();
+            $count = ReservedDates::where('reserved_date', $date['reserved_date'])->count();
+            if ($date['user_id'] !== $user->id && $product['max_group'] < $count + 1) {
+                array_push($reserved, $date['reserved_date']);
+            }
+        }
+
+        return array_unique($reserved);
     }
 }

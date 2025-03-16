@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Location;
+use App\Models\Proposal;
 use App\Models\ProposalProduct;
 use App\Models\ProposalProductPrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Exceptions;
+use Illuminate\Support\Facades\Log;
 
 class ProposalProductController extends Controller
 {
@@ -43,6 +46,26 @@ class ProposalProductController extends Controller
         } else {
             $data['error'] = "Product already exist in your proposal";
             return response()->json($data);
+        }
+    }
+
+    public function deleteProduct(Request $req)
+    {
+        $user = $req->user();
+        try {
+            $proposal = Proposal::where('proposal_id', $req->id)->first();
+            if ($proposal['user_id'] === $user->id) {
+                $product = ProposalProduct::where('proposal_id', $req->id)->where('product_id', $req->input('location_id'))->first();
+                if ($product) {
+                    ProposalProductPrice::where('proposal_product_id', $product['proposal_product_id'])->delete();
+                    $product->delete();
+                }
+
+                return response()->json(["success"]);
+            }
+        } catch (Exceptions $e) {
+            Log::error('Error deleting location for proposal. ', $req->id, '. ' . $e);
+            return response()->json(['error' => 'Error deleting location from proposal']);
         }
     }
 

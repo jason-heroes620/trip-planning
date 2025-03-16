@@ -26,5 +26,6 @@ class School extends Model
         'email',
         'school_logo',
         'google_map_location',
+        'user_id',
     ];
 }

@@ -30,7 +30,7 @@ const SearchFilter = ({ filters, search, filter }: any) => {
         search: search || '',
         filter: filter || [],
     });
-    console.log(search, ' ', filter);
+
     const fetchSuggestions = debounce(async (searchTerm) => {
         if (!searchTerm) {
             setSuggestions([]);

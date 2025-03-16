@@ -17,7 +17,7 @@ use App\Models\ProposalItem;
 use App\Models\ProposalProduct;
 use App\Models\ProposalProductPrice;
 use App\Models\Quotation;
-use App\Models\QuotationDiscount;
+use App\Models\ProposalDiscount;
 use App\Models\School;
 use Illuminate\Support\Facades\Log;
 use Throwable;
@@ -27,15 +27,14 @@ class OrderController extends Controller
     public function index(Request $req)
     {
         $user = $req->user();
-        $orders = Order::where('user_id', $user->id)->orderBy('created_at', 'DESC')->paginate(10);
+        $orders = Order::where('user_id', $user->id)->orderBy('order_no', 'DESC')->paginate(10);
         return Inertia::render('Orders', compact('orders'));
     }
 
     public function view(Request $req)
     {
         $order = Order::where('order_id', $req->id)->first();
-        $quotation = Quotation::where('quotation_id', $order['quotation_id'])->first();
-        $proposal = Proposal::where('proposal_id', $quotation['proposal_id'])->first();
+        $proposal = Proposal::where('proposal_id', $order['proposal_id'])->first();
 
         $total = 0;
         $fee_amount = 0.00;
@@ -51,7 +50,7 @@ class OrderController extends Controller
             }
         }
 
-        $discount = QuotationDiscount::where('quotation_id', $quotation['quotation_id'])->first();
+        $discount = ProposalDiscount::where('proposal_id', $proposal['quotation_id'])->first();
 
         $proposalItems = ProposalItem::leftJoin('item', 'item.item_id', 'proposal_item.item_id')
             ->where('proposal_id', $proposal['proposal_id'])
@@ -72,7 +71,7 @@ class OrderController extends Controller
 
         return Inertia::render(
             'Order',
-            compact('order', 'quotation', 'proposal', 'proposalProduct', 'proposalItems', 'school', 'discount', 'fees', 'total', 'orderTotal')
+            compact('order', 'proposal', 'proposalProduct', 'proposalItems', 'school', 'discount', 'fees', 'total', 'orderTotal')
         );
     }
 

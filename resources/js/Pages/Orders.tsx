@@ -45,22 +45,6 @@ const Orders = ({ orders }: { orders: any }) => {
                                 ),
                             },
                             {
-                                label: 'Amount (RM)',
-                                name: 'amount',
-
-                                renderCell: (row) => (
-                                    <>
-                                        <>
-                                            {row.order_amount
-                                                ? formattedNumber(
-                                                      row.order_amount,
-                                                  )
-                                                : ''}
-                                        </>
-                                    </>
-                                ),
-                            },
-                            {
                                 label: 'Due Date',
                                 name: 'due_date',
 
@@ -77,6 +61,37 @@ const Orders = ({ orders }: { orders: any }) => {
                                 ),
                             },
                             {
+                                label: 'Amount (RM)',
+                                name: 'amount',
+
+                                renderCell: (row) => (
+                                    <>
+                                        <span className="font-bold">
+                                            {row.order_amount
+                                                ? formattedNumber(
+                                                      row.order_amount,
+                                                  )
+                                                : ''}
+                                        </span>
+                                    </>
+                                ),
+                            },
+                            {
+                                label: 'Type',
+                                name: 'order_type',
+                                renderCell: (row: any) => (
+                                    <>
+                                        <small>
+                                            {row.order_type === 'D'
+                                                ? 'Deposit'
+                                                : row.order_type === 'B'
+                                                  ? 'Balance'
+                                                  : 'Full Payment'}
+                                        </small>
+                                    </>
+                                ),
+                            },
+                            {
                                 label: 'Status',
                                 name: 'status',
                                 renderCell: (row) => (
@@ -87,7 +102,7 @@ const Orders = ({ orders }: { orders: any }) => {
                                                 : row.order_status === 1
                                                   ? 'Pending Payment'
                                                   : row.order_status === 2
-                                                    ? 'Payment Made'
+                                                    ? 'Paid'
                                                     : row.order_status === 3
                                                       ? 'Cancelled'
                                                       : 'Payment Failed'}

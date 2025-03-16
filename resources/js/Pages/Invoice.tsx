@@ -72,7 +72,7 @@ const Invoice = ({
                                     )}
                                 </span>
                             </div>
-                            <div className="px-2">
+                            {/* <div className="px-2">
                                 <InputLabel
                                     htmlFor="invoice_date"
                                     value="Invoice Date"
@@ -83,7 +83,7 @@ const Invoice = ({
                                         'DD/MM/YYYY',
                                     )}
                                 </span>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                     <hr />
@@ -170,66 +170,87 @@ const Invoice = ({
                                 </span>
                             </div>
                         </div>
-                        {proposalProduct.map((product: any, index: any) => {
-                            return (
-                                <div
-                                    className="flex flex-col py-4 md:grid md:grid-cols-6"
-                                    key={product.proposal_product_id}
-                                >
-                                    <div className="flex md:col-span-3 md:row-span-2">
-                                        {product.product.product_name}
+                        {order.order_type === 'D' && (
+                            <div className="flex flex-col py-4 md:grid md:grid-cols-6">
+                                <div className="flex md:col-span-3 md:grid">
+                                    <span>Deposit</span>
+                                </div>
+                                <div className="flex flex-row justify-between md:col-span-3">
+                                    <div className="justify-end">
+                                        <span>1</span>
                                     </div>
+                                    <div className="justify-end">
+                                        <span>{order.order_amount}</span>
+                                    </div>
+                                    <div className="justify-end">
+                                        <span>{order.order_amount}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        {order.order_type !== 'D' &&
+                            proposalProduct.map((product: any, index: any) => {
+                                return (
+                                    <div
+                                        className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                        key={index}
+                                    >
+                                        <div className="flex md:col-span-3 md:row-span-2">
+                                            {product.product.product_name}
+                                        </div>
 
-                                    {product.product_price.map((p: any) => {
-                                        return (
-                                            <div
-                                                className="flex flex-row justify-between md:col-span-3"
-                                                key={p.product_price_id}
-                                            >
-                                                <div className="flex md:col-span-1 md:justify-end">
-                                                    {p.qty}
+                                        {product.product_price.map((p: any) => {
+                                            return (
+                                                <div
+                                                    className="flex flex-row justify-between md:col-span-3"
+                                                    key={p.product_price_id}
+                                                >
+                                                    <div className="flex justify-end md:col-span-1">
+                                                        {p.qty}
+                                                    </div>
+                                                    <div className="flex justify-end md:col-span-1">
+                                                        {p.unit_price}
+                                                    </div>
+                                                    <div className="flex justify-end md:col-span-1">
+                                                        {(
+                                                            p.qty * p.unit_price
+                                                        ).toFixed(2)}
+                                                    </div>
                                                 </div>
-                                                <div className="flex justify-end md:col-span-1">
-                                                    {p.unit_price}
-                                                </div>
-                                                <div className="flex justify-end md:col-span-1">
-                                                    {(
-                                                        p.qty * p.unit_price
-                                                    ).toFixed(2)}
-                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                );
+                            })}
+
+                        {order.order_type !== 'D' &&
+                            proposalItems.map((item: any, index: any) => {
+                                return (
+                                    <div
+                                        className="flex flex-col py-4 md:grid md:grid-cols-6"
+                                        key={index}
+                                    >
+                                        <div className="flex md:col-span-3">
+                                            {item.item_name}
+                                        </div>
+
+                                        <div className="flex flex-row justify-between md:col-span-3">
+                                            <div className="flex justify-end md:col-span-1 md:grid">
+                                                {item.item_qty}
                                             </div>
-                                        );
-                                    })}
-                                </div>
-                            );
-                        })}
-
-                        {proposalItems.map((item: any, index: any) => {
-                            return (
-                                <div
-                                    className="flex flex-col py-4 md:grid md:grid-cols-6"
-                                    key={index}
-                                >
-                                    <div className="flex md:col-span-3">
-                                        {item.item_name}
-                                    </div>
-
-                                    <div className="flex flex-row justify-between md:col-span-3">
-                                        <div className="flex justify-end md:col-span-1 md:grid">
-                                            {item.item_qty}
-                                        </div>
-                                        <div className="flex justify-end md:col-span-1 md:grid">
-                                            {item.unit_price}
-                                        </div>
-                                        <div className="flex md:col-span-1 md:grid">
-                                            {(
-                                                item.item_qty * item.unit_price
-                                            ).toFixed(2)}
+                                            <div className="flex justify-end md:col-span-1 md:grid">
+                                                {item.unit_price}
+                                            </div>
+                                            <div className="flex md:col-span-1 md:grid">
+                                                {(
+                                                    item.item_qty *
+                                                    item.unit_price
+                                                ).toFixed(2)}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
                     </div>
                     <hr />
                     <div className="flex flex-col gap-2 py-4">
@@ -257,7 +278,7 @@ const Invoice = ({
                                     </span>
                                     <span>
                                         {moment(payment.created).format(
-                                            'DD/MM/YYYY',
+                                            'DD MMM YYYY',
                                         )}
                                     </span>
                                 </div>

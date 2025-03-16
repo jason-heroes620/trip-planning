@@ -74,7 +74,10 @@ Route::middleware('auth')->group(function () {
 
     Route::put('/proposal_markup/{id}', [ProposalController::class, 'addMarkup'])->name('proposal.markup');
     Route::get('/getDisabledDays/{id}', [ProposalController::class, 'getDisabledDays'])->name('proposal.getDisabledDays');
+    Route::get('/getDisabledDates/{id}', [ProposalController::class, 'getDisabledDates'])->name('proposal.getDisabledDates');
+
     Route::post('/proposalProduct/add', [ProposalProductController::class, 'addProduct'])->name('proposalProduct.add');
+    Route::delete('/proposal_location_delete/{id}', [ProposalProductController::class, 'deleteProduct'])->name('proposal_location.delete');
 
     // quotation
     Route::post('/quotation', [QuotationController::class, 'create'])->name('quotation.create');

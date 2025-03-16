@@ -42,19 +42,25 @@ import { ProposalItem } from '@/types';
 import { formattedNumber } from '@/util/formatNumber';
 import { renderHTML } from '@/util/renderHtml';
 import { secondsToHms } from '@/util/secondsToHms';
+import useDisabledDates from '@/util/useDisabledDates';
 import useDisabledDays from '@/util/useDisabledDays';
 import { Link, router, useForm, usePage } from '@inertiajs/react';
 import { useLoadScript } from '@react-google-maps/api';
 import axios from 'axios';
+import { isSameDay } from 'date-fns';
 import {
     CalendarIcon,
     Hourglass,
     MapPin,
+    Trash2,
     UsersRound,
     Utensils,
 } from 'lucide-react';
 import moment from 'moment';
 import { useEffect, useMemo, useState } from 'react';
+
+const mapKey = import.meta.env.VITE_GOOGLE_KEY;
+const libraries = ['places'];
 
 const ProposalView = ({
     auth,
@@ -83,11 +89,17 @@ const ProposalView = ({
         special_request: proposal.special_request,
         markup_per_student: proposal.markup_per_student,
     });
+
+    const products = proposal_product.map((p: any) => {
+        return p.product_id;
+    });
+
     const { disabledDays } = useDisabledDays(proposal.proposal_id);
+    const { disabledDates } = useDisabledDates(proposal.proposal_id, products);
 
     const libraries = useMemo(() => ['places'], []);
     const { isLoaded } = useLoadScript({
-        googleMapsApiKey: import.meta.env.VITE_GOOGLE_KEY, // Replace with your API key
+        googleMapsApiKey: mapKey, // Replace with your API key
         libraries: libraries as any,
     });
 
@@ -144,10 +156,10 @@ const ProposalView = ({
     };
 
     const [open, setOpen] = useState(false);
-    const [openRequestQuotation, setOpenRequestQuotation] = useState(false);
+    const [openRequestOrder, setOpenRequestOrder] = useState(false);
 
     const [date, setDate] = useState<Date | undefined>(
-        data.proposal_date ? data.proposal_date : '',
+        data.proposal_date ? moment(data.proposal_date).toDate() : undefined,
     );
 
     const [transportationItem, setTransportationItem] = useState(
@@ -324,11 +336,13 @@ const ProposalView = ({
         setLocations(travelLocations);
 
         if (proposal.travel_duration === 0 || proposal.travel_distance === 0) {
-            calculateDistances(travelLocations);
+            if (isLoaded) {
+                calculateDistances(travelLocations);
+            }
         }
 
         calculateTotal(proposal_item, data.qty_student, data.qty_teacher);
-    }, [travelInfo.travelDistance]);
+    }, [travelInfo.travelDistance, isLoaded]);
 
     const checkMinAndMaxQty = async () => {
         let qualify = true;
@@ -379,7 +393,7 @@ const ProposalView = ({
         });
     };
 
-    const handleRequestQuotation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleRequestOrder = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
 
         const draft = {
@@ -391,29 +405,14 @@ const ProposalView = ({
             qty_teacher: data.qty_teacher,
             proposal_items: proposalItems,
             special_request: data.special_request,
+            proposal_status: 2,
         };
         axios.post(route('proposal.update'), draft).then((resp) => {
             if (resp.data.success) {
-                axios
-                    .post(route('quotation.create'), {
-                        proposal_id: proposal.proposal_id,
-                        subTotal: productTotal + optionTotal,
-                        total: total,
-                    })
-                    .then((resp) => {
-                        if (resp.data.success) {
-                            toast({
-                                description: resp.data.success,
-                            });
-                            setData('proposal_status', 1);
-                        } else {
-                            toast({
-                                variant: 'destructive',
-                                title: 'Quotation request error!',
-                                description: resp.data.failed,
-                            });
-                        }
-                    });
+                setData('proposal_status', 2);
+                toast({
+                    description: resp.data.request_order,
+                });
             } else {
                 toast({
                     variant: 'destructive',
@@ -422,7 +421,7 @@ const ProposalView = ({
                         'There was an issue with your request. Please save your changes before requesting.',
                 });
             }
-            setOpenRequestQuotation(false);
+            setOpenRequestOrder(false);
         });
     };
 
@@ -468,8 +467,27 @@ const ProposalView = ({
 
     const isDateDisabled = (dateToCheck: Date) => {
         const dayOfWeek = moment(dateToCheck).day();
-        // return dayOfWeek === 0 || dayOfWeek === 6; // 0 = Sunday, 6 = Saturday, 3 = Wednesday
-        return disabledDays.includes(dayOfWeek);
+        if (disabledDays.includes(dayOfWeek)) {
+            return true;
+        }
+
+        return disabledDates.some((disabledDate: Date) =>
+            isSameDay(dateToCheck, disabledDate),
+        );
+    };
+
+    const handleDeleteLocation = (locationId: number) => {
+        axios
+            .delete(route('proposal_location.delete', proposal.proposal_id), {
+                params: {
+                    location_id: locationId,
+                },
+            })
+            .then((resp) => {
+                if (resp.status === 200) {
+                    window.location.reload();
+                }
+            });
     };
 
     return (
@@ -480,8 +498,9 @@ const ProposalView = ({
                         <div className="py-4">
                             <Button
                                 variant={'destructive'}
-                                onClick={() =>
-                                    router.visit(previousUrl.toString())
+                                onClick={
+                                    () => router.visit(route('proposal.index'))
+                                    // router.visit(previousUrl.toString())
                                 }
                             >
                                 Back
@@ -664,6 +683,7 @@ const ProposalView = ({
                     {proposal_product.map((p: any, i: number) => {
                         return (
                             <div className="py-4 md:px-10 lg:px-20" key={i}>
+                                <div className="flex justify-end"></div>
                                 <div className="flex flex-col md:grid md:grid-cols-2 md:gap-6">
                                     <div className="flex justify-center">
                                         <img
@@ -673,7 +693,7 @@ const ProposalView = ({
                                         />
                                     </div>
                                     <div className="px-4">
-                                        <div className="py-2">
+                                        <div className="flex justify-between gap-4 py-2">
                                             <Link
                                                 href={route(
                                                     'location.view',
@@ -684,6 +704,52 @@ const ProposalView = ({
                                                     {p.location.product_name}
                                                 </span>
                                             </Link>
+                                            <div>
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <Trash2
+                                                            size={20}
+                                                            color="red"
+                                                            className="hover:cursor-pointer"
+                                                        />
+                                                    </DialogTrigger>
+                                                    <DialogContent className="max-h-screen max-w-[425px]">
+                                                        <DialogHeader>
+                                                            <DialogTitle></DialogTitle>
+                                                            <DialogDescription>
+                                                                Confirm to
+                                                                delete this
+                                                                location from
+                                                                proposal?
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+
+                                                        <DialogFooter className="justify-end">
+                                                            <DialogClose
+                                                                asChild
+                                                            >
+                                                                <Button
+                                                                    type="button"
+                                                                    variant="secondary"
+                                                                >
+                                                                    Close
+                                                                </Button>
+                                                            </DialogClose>
+                                                            <Button
+                                                                onClick={() =>
+                                                                    handleDeleteLocation(
+                                                                        p
+                                                                            .location
+                                                                            .id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Confirm
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </DialogContent>
+                                                </Dialog>
+                                            </div>
                                         </div>
                                         <div className="flex flex-col gap-2">
                                             <div className="flex flex-row items-center gap-2">
@@ -803,10 +869,24 @@ const ProposalView = ({
                                         <div className="flex flex-col py-2">
                                             <div className="flex flex-row justify-end">
                                                 <span className="text-left font-bold">
-                                                    (student ){' '}
-                                                    {formattedNumber(
+                                                    (student){' '}
+                                                    {/* {formattedNumber(
                                                         p.location
                                                             .student_price,
+                                                    )} */}
+                                                    {formattedNumber(
+                                                        product_prices.filter(
+                                                            (price: any) => {
+                                                                return (
+                                                                    price.product_id ===
+                                                                        p
+                                                                            .location
+                                                                            .id &&
+                                                                    price.attribute ===
+                                                                        'student'
+                                                                );
+                                                            },
+                                                        )[0].unit_price,
                                                     )}
                                                 </span>
                                             </div>
@@ -814,8 +894,18 @@ const ProposalView = ({
                                                 <span className="text-left font-bold">
                                                     (teacher){' '}
                                                     {formattedNumber(
-                                                        p.location
-                                                            .teacher_price,
+                                                        product_prices.filter(
+                                                            (price: any) => {
+                                                                return (
+                                                                    price.product_id ===
+                                                                        p
+                                                                            .location
+                                                                            .id &&
+                                                                    price.attribute ===
+                                                                        'teacher'
+                                                                );
+                                                            },
+                                                        )[0].unit_price,
                                                     )}
                                                 </span>
                                             </div>
@@ -1097,8 +1187,8 @@ const ProposalView = ({
                         </AlertDialogContent>
                     </AlertDialog>
                     <AlertDialog
-                        open={openRequestQuotation}
-                        onOpenChange={setOpenRequestQuotation}
+                        open={openRequestOrder}
+                        onOpenChange={setOpenRequestOrder}
                     >
                         <AlertDialogTrigger asChild>
                             <Button
@@ -1125,9 +1215,7 @@ const ProposalView = ({
                             <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction
-                                    onClick={(e: any) =>
-                                        handleRequestQuotation(e)
-                                    }
+                                    onClick={(e: any) => handleRequestOrder(e)}
                                 >
                                     Continue
                                 </AlertDialogAction>

@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\Uid\UuidV8;
-use App\Models\QuotationDiscount;
+use App\Models\ProposalDiscount;
 use App\Models\School;
 
 class QuotationController extends Controller
@@ -56,7 +56,7 @@ class QuotationController extends Controller
             }
             $amount += $fee_amount;
 
-            $quotation_discount = QuotationDiscount::where('quotation_id', $q['quotation_id'])->first();
+            $quotation_discount = ProposalDiscount::where('quotation_id', $q['quotation_id'])->first();
             $discount = 0;
             if ($quotation_discount) {
                 if ($quotation_discount['discount_type'] == "F") {
@@ -92,53 +92,6 @@ class QuotationController extends Controller
                 'user_id' => $user->id,
             ]);
 
-            // ProposalTotal::create([
-            //     'proposal_id' => $req->input('proposal_id'),
-            //     'code' => 'sub_total',
-            //     'title' => 'Sub Total',
-            //     'value' => $req->input('subTotal'),
-            //     'sort_order' => 1
-            // ]);
-
-            // ProposalTotal::create([
-            //     'proposal_id' => $req->input('proposal_id'),
-            //     'code' => 'total',
-            //     'title' => 'Total',
-            //     'value' => $req->input('total'),
-            //     'sort_order' => 99
-            // ]);
-
-            // $proposal_product = ProposalProduct::where('proposal_id', $req->input('proposal_id'))->get();
-            // foreach ($proposal_product as $p) {
-            //     $quotation_product = QuotationProduct::create([
-            //         'product_id' => $p['product_id'],
-            //         'quotation_id' => $quotation_id
-            //     ]);
-
-            //     $proposal_price = ProposalProductPrice::where('proposal_product_id', $p['proposal_product_id'])->get();
-            //     foreach ($proposal_price as $pp) {
-            //         QuotationProductPrice::create([
-            //             'quotation_product_id' => $quotation_product['quotation_product_id'],
-            //             'attribute' => $pp['attribute'],
-            //             'uom' => $pp['uom'],
-            //             'qty' => $pp['qty'],
-            //             'unit_price' => $pp['unit_price'],
-            //             'sales_tax' => $pp['sales_tax'],
-            //         ]);
-            //     }
-            // }
-
-            // $proposal_item = ProposalItem::where('proposal_id', $req->input('proposal_id'))->get();
-            // foreach ($proposal_item as $p) {
-            //     QuotationItem::create([
-            //         'item_id' => $p['item_id'],
-            //         'uom' => $p['uom'],
-            //         'item_qty' => $p['item_qty'],
-            //         'unit_price' => $p['unit_price'],
-            //         'sales_tax' => $p['sales_tax'],
-            //         'quotation_id' => $quotation_id
-            //     ]);
-            // }
             $school = School::where('user_id', $user->id)->first();
             event(new QuotationRequestEvent($school));
             $data["success"] = "Your request for quotation has been sent. Please allow 3 - 5 business days for us to process your request.";
@@ -170,7 +123,7 @@ class QuotationController extends Controller
 
         $fees = Fees::where('effective_date', '<=', now())->where('expiry_date', null)->get();
 
-        $quotation_discount = QuotationDiscount::where('quotation_id', $req->id)->first();
+        $quotation_discount = ProposalDiscount::where('quotation_id', $req->id)->first();
 
         return Inertia::render('Quotation', compact('quotation', 'proposal', 'quotation_product', 'quotation_item', 'prices', 'quotation_discount', 'fees'));
     }

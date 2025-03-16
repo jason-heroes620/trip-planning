@@ -122,7 +122,7 @@ export function AppSidebar() {
                                     </CollapsibleTrigger> */}
                                     <CollapsibleContent>
                                         <SidebarMenuSub>
-                                            <SidebarMenuSubItem>
+                                            {/* <SidebarMenuSubItem>
                                                 <SidebarMenuSubButton
                                                     asChild
                                                     key={'quotations'}
@@ -131,7 +131,7 @@ export function AppSidebar() {
                                                         Quotations
                                                     </Link>
                                                 </SidebarMenuSubButton>
-                                            </SidebarMenuSubItem>
+                                            </SidebarMenuSubItem> */}
                                             <SidebarMenuSubItem>
                                                 <SidebarMenuSubButton
                                                     asChild
