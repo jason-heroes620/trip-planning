@@ -15,7 +15,8 @@ class LocationController extends Controller
 {
     public function index(Request $req)
     {
-        $query = Location::query();
+        $query = Location::query()
+            ->select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image']);
         $query->leftJoin('product_filter', 'product_filter.product_id', 'products.id')->where('products.status', 0);
 
         // Apply search filter
@@ -33,9 +34,12 @@ class LocationController extends Controller
         $products = [];
         if ($req->filled('search') || $req->filled('filter')) {
             if ($req->filled('filter')) {
-                $products = $query->whereIn('product_filter.filter_id', $req->filter)->distinct()->paginate(12);
+                $products = $query->whereIn('product_filter.filter_id', $req->filter)
+                    ->groupBy('id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image')
+                    ->paginate(12);
             } else {
-                $products = $query->distinct()->paginate(12);
+                $products = $query->groupBy('id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image')
+                    ->paginate(12);
             }
         } else {
             $products = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])
