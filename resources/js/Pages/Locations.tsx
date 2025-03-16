@@ -8,6 +8,22 @@ import { MapPin } from 'lucide-react';
 
 const Locations = ({ newProducts, products, filters, search, filter }: any) => {
     const { data, links, to, from, total } = products;
+    let linkFilter = '';
+    let linkSearch = '';
+
+    if (filter !== null || search !== '') {
+        if (filter !== null) {
+            filter.map((f: any, index: number) => {
+                linkFilter = `${linkFilter}&filter[${index}]=${f}`;
+            });
+        }
+        if (search !== '' && search !== null) {
+            linkSearch = `${linkSearch}&search=${search}`;
+        }
+        links.map((l: any) => {
+            l.url = l.url ? `${l.url}${linkSearch}${linkFilter}` : '';
+        });
+    }
 
     const product = data.filter(
         (o: any, index: number, arr: any) =>

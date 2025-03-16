@@ -35,7 +35,7 @@ class LocationController extends Controller
             if ($req->filled('filter')) {
                 $products = $query->whereIn('product_filter.filter_id', $req->filter)->distinct()->paginate(12);
             } else {
-                $products = $query->paginate(12);
+                $products = $query->distinct()->paginate(12);
             }
         } else {
             $products = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])
