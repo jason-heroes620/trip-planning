@@ -65,7 +65,11 @@ class LocationController extends Controller
                 $product['filters'] = $filter;
             }
         }
-        // print_r($products);
+
+        $featured = Location::where('is_featured', 0)->get();
+        foreach ($featured as $f) {
+            $f['url'] = $this->getImage($f['product_image']);
+        }
 
         foreach ($newProducts as $product) {
             $product['url'] = $this->getImage($product['product_image']);
@@ -76,6 +80,7 @@ class LocationController extends Controller
         return Inertia::render('Locations', [
             'newProducts' => $newProducts,
             'products' => $products,
+            'featured' => $featured,
             'filters' => $filters,
             'search' => $req->search,
             'filter' => $req->filter

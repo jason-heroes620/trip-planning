@@ -84,6 +84,13 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                                                             'profile.edit',
                                                         )}
                                                     >
+                                                        Account
+                                                    </Dropdown.Link>
+                                                    <Dropdown.Link
+                                                        href={route(
+                                                            'profile.edit',
+                                                        )}
+                                                    >
                                                         Profile
                                                     </Dropdown.Link>
                                                     <Dropdown.Link
@@ -160,6 +167,11 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                                     </div>
 
                                     <div className="mt-3 space-y-1">
+                                        <ResponsiveNavLink
+                                            href={route('profile.edit')}
+                                        >
+                                            Account
+                                        </ResponsiveNavLink>
                                         <ResponsiveNavLink
                                             href={route('profile.edit')}
                                         >

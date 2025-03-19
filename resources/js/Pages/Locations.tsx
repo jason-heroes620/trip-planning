@@ -6,7 +6,14 @@ import UserLayout from '@/layout/UserLayout';
 import { Link } from '@inertiajs/react';
 import { MapPin } from 'lucide-react';
 
-const Locations = ({ newProducts, products, filters, search, filter }: any) => {
+const Locations = ({
+    newProducts,
+    products,
+    featured,
+    filters,
+    search,
+    filter,
+}: any) => {
     const { data, links, to, from, total } = products;
     let linkFilter = '';
     let linkSearch = '';
@@ -101,7 +108,7 @@ const Locations = ({ newProducts, products, filters, search, filter }: any) => {
                                                                         </small>
                                                                     </div>
                                                                     <div>
-                                                                        <small className="italic">
+                                                                        <small className="line-clamp-1 italic">
                                                                             {
                                                                                 p.filters
                                                                             }
@@ -140,6 +147,17 @@ const Locations = ({ newProducts, products, filters, search, filter }: any) => {
                                     </span>
                                 )}
                             </div>
+                        </div>
+                    </div>
+                    <div className="py-4">
+                        <hr />
+                    </div>
+                    <div className="flex flex-col pb-6">
+                        <div className="py-2">
+                            <span>Featured</span>
+                        </div>
+                        <div className="flex justify-center px-2 py-2">
+                            <ProductCarousel products={featured} />
                         </div>
                     </div>
                 </div>
