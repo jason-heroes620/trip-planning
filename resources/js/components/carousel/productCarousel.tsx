@@ -39,7 +39,7 @@ const ProductCarousel = ({ products }: any) => {
                                         <div className="px-4">
                                             <div className="flex h-[110px] flex-col py-2 pt-4">
                                                 <div>
-                                                    <span>
+                                                    <span className="line-clamp-2">
                                                         {p.product_name}
                                                     </span>
                                                 </div>

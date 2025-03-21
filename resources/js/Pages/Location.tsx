@@ -1,26 +1,53 @@
 import ImagesCarousel from '@/components/carousel/imagesCarousel';
 import Proposal from '@/components/modal/proposal';
 import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
 import UserLayout from '@/layout/UserLayout';
 import { Product } from '@/types';
 import { renderHTML } from '@/util/renderHtml';
 import { secondsToHms } from '@/util/secondsToHms';
 import { router, usePage } from '@inertiajs/react';
-import { Hourglass, MapPin, UsersRound, Utensils } from 'lucide-react';
-
+import axios from 'axios';
+import { Heart, Hourglass, MapPin, UsersRound, Utensils } from 'lucide-react';
+import { useState } from 'react';
 import '../../css/style.css';
 
 const Location = () => {
-    const { product, productDetail, productImages } = usePage<{
+    const { toast } = useToast();
+    const { product, productDetail, productImages, isLiked } = usePage<{
         auth: any;
         flash: any;
         product: Product;
         productDetail: any;
         productImages: any[];
         product_desription: string;
+        isLiked: any;
     }>().props;
     const { props } = usePage();
     const previousUrl = props.previousUrl || '/';
+    const [filled, setFilled] = useState(isLiked);
+
+    const handleLike = () => {
+        setFilled(!filled);
+        if (filled) {
+            axios.put(route('location.unliked', product.id)).then((resp) => {
+                if (resp.status === 200) {
+                    toast({
+                        description:
+                            'Successfully removed from your likes list.',
+                    });
+                }
+            });
+        } else {
+            axios.put(route('location.liked', product.id)).then((resp) => {
+                if (resp.status === 200) {
+                    toast({
+                        description: 'Successfully added to your likes list.',
+                    });
+                }
+            });
+        }
+    };
 
     return (
         <UserLayout>
@@ -28,7 +55,11 @@ const Location = () => {
                 <div className="py-2">
                     <Button
                         variant={'destructive'}
-                        onClick={() => router.visit(previousUrl.toString())}
+                        onClick={() =>
+                            previousUrl.toString() === window.location.href
+                                ? router.visit(route('locations.index'))
+                                : router.visit(previousUrl.toString())
+                        }
                     >
                         Back
                     </Button>
@@ -41,10 +72,18 @@ const Location = () => {
                     </div>
 
                     <div className="flex w-full flex-col rounded-lg border bg-orange-50 px-4 py-4 md:w-[50%] md:gap-2 md:px-8 lg:px-10">
-                        <div>
+                        <div className="flex flex-col md:flex-row md:justify-between md:gap-4">
                             <span className="line-clamp-2 text-lg font-bold">
                                 {product.product_name}
                             </span>
+                            <div className="flex justify-end">
+                                <Heart
+                                    color="red"
+                                    size={24}
+                                    onClick={() => handleLike()}
+                                    className={`cursor-pointer ${filled ? 'fill-red-500' : ''}`}
+                                />
+                            </div>
                         </div>
                         <div className="flex flex-col py-4 md:py-2">
                             <div className="flex flex-col py-2 md:grid md:grid-cols-2 md:gap-2">

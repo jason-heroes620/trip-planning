@@ -81,7 +81,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                                                 <Dropdown.Content>
                                                     <Dropdown.Link
                                                         href={route(
-                                                            'profile.edit',
+                                                            'account.view',
                                                         )}
                                                     >
                                                         Account
@@ -92,6 +92,13 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                                                         )}
                                                     >
                                                         Profile
+                                                    </Dropdown.Link>
+                                                    <Dropdown.Link
+                                                        href={route(
+                                                            'locations.likes',
+                                                        )}
+                                                    >
+                                                        My Likes
                                                     </Dropdown.Link>
                                                     <Dropdown.Link
                                                         href={route('logout')}
@@ -168,7 +175,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
 
                                     <div className="mt-3 space-y-1">
                                         <ResponsiveNavLink
-                                            href={route('profile.edit')}
+                                            href={route('account.view')}
                                         >
                                             Account
                                         </ResponsiveNavLink>

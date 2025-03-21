@@ -1,74 +1,24 @@
-import ProductCarousel from '@/components/carousel/productCarousel';
 import Pagination from '@/components/pagination';
-import SearchFilter from '@/components/SearchFilter';
 import { Card, CardContent } from '@/components/ui/card';
 import UserLayout from '@/layout/UserLayout';
 import { Link } from '@inertiajs/react';
 import { MapPin } from 'lucide-react';
 
-const Locations = ({
-    newProducts,
-    products,
-    featured,
-    liked,
-    like_more,
-    filters,
-    search,
-    filter,
-}: any) => {
+const MyLikes = ({ products }: any) => {
     const { data, links, to, from, total } = products;
-    let linkFilter = '';
-    let linkSearch = '';
-
-    if (filter !== null || search !== '') {
-        if (filter !== null) {
-            filter.map((f: any, index: number) => {
-                linkFilter = `${linkFilter}&filter[${index}]=${f}`;
-            });
-        }
-        if (search !== '' && search !== null) {
-            linkSearch = `${linkSearch}&search=${search}`;
-        }
-        links.map((l: any) => {
-            l.url = l.url ? `${l.url}${linkSearch}${linkFilter}` : '';
-        });
-    }
-
-    const product = data.filter(
-        (o: any, index: number, arr: any) =>
-            arr.findIndex(
-                (item: any) => JSON.stringify(item.id) === JSON.stringify(o.id),
-            ) === index,
-    );
 
     return (
         <UserLayout>
             <div className="px-4 py-4 md:px-10 lg:px-18 xl:px-24">
                 <div className="py-4">
-                    <span className="text-lg font-bold">Locations</span>
+                    <span className="text-lg font-bold">My Likes</span>
                 </div>
                 <div className="flex flex-col">
-                    <div className="flex flex-col pb-6">
-                        <div className="py-2">
-                            <span className="font-semibold">What's New</span>
-                        </div>
-                        <div className="flex justify-center px-2 py-2">
-                            <ProductCarousel products={newProducts} />
-                        </div>
-                    </div>
-                    <hr />
                     <div className="w-full flex-1 px-4 py-4 md:px-4 lg:px-10">
-                        <div className="flex flex-row md:justify-end">
-                            <SearchFilter
-                                filters={filters}
-                                search={search}
-                                filter={filter}
-                            />
-                        </div>
-                        <div className="py-6">
+                        <div className="py-4">
                             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                                {product.length > 0 ? (
-                                    product.map((p: any) => {
+                                {products.length > 0 ? (
+                                    products.map((p: any) => {
                                         return (
                                             <Link
                                                 href={route(
@@ -152,43 +102,10 @@ const Locations = ({
                             </div>
                         </div>
                     </div>
-                    <div className="py-4">
-                        <hr />
-                    </div>
-                    <div className="flex flex-col pb-6">
-                        <div className="py-2">
-                            <span className="font-semibold">Featured</span>
-                        </div>
-                        <div className="flex justify-center px-2 py-2">
-                            <ProductCarousel products={featured} />
-                        </div>
-                    </div>
-                    <div className="py-4">
-                        <hr />
-                    </div>
-                    {liked.length > 0 && (
-                        <div className="flex flex-col pb-6">
-                            <div className="fpy-2">
-                                <span className="font-semibold">Likes</span>
-                            </div>
-                            {like_more && (
-                                <div className="flex justify-end px-6">
-                                    <Link href={route('locations.likes')}>
-                                        <span className="font-semibold italic">
-                                            Show More {'>>'}
-                                        </span>
-                                    </Link>
-                                </div>
-                            )}
-                            <div className="flex justify-center px-2 py-2">
-                                <ProductCarousel products={liked} />
-                            </div>
-                        </div>
-                    )}
                 </div>
             </div>
         </UserLayout>
     );
 };
 
-export default Locations;
+export default MyLikes;

@@ -66,6 +66,56 @@ class SchoolController extends Controller
         }
     }
 
+    public function view(Request $req)
+    {
+        $user = $req->user();
+        $school = School::where('user_id', $user->id)->first();
+        $school_logo = $this->getSchoolLogo($school['school_id']);
+
+        return Inertia::render('Account/View', compact('school', 'school_logo'));
+    }
+
+    public function update(Request $req)
+    {
+        try {
+            $school = School::where('school_id', $req->id)->update([
+                'school_name' => $req->input('school_name'),
+                'address_1' => $req->input('address_1'),
+                'address_2' => $req->input('address_2'),
+                'address_3' => $req->input('address_3'),
+                'city' => $req->input('city'),
+                'postcode' => $req->input('postcode'),
+                'state' => $req->input('state'),
+                'contact_person' => $req->input('contact_person'),
+                'contact_no' => $req->input('contact_no'),
+                'mobile_no' => $req->input('mobile_no'),
+                'email' => $req->input('email'),
+                'google_place_name' => $req->input('google_place_name'),
+            ]);
+
+            $school_logo = "";
+            if ($req->file('school_logo')) {
+                print_r('logo');
+                $school_logo = storage_path('app/public/schoolLogos');
+                $file_name = $this->randomFileNameGenerator(
+                    15,
+                    $this->getFileExtension($req->file('school_logo')->getClientOriginalName())
+                );
+                $req->file('school_logo')->move($school_logo, $file_name);
+
+                School::where('school_id', $req->id)->update([
+                    'school_logo' => $school_logo . '/' . $file_name,
+                ]);
+            }
+
+            return back()->with(["success" => "School information updated"]);
+        } catch (Exceptions $e) {
+            Log::error("Error updating school information for " . $req->id, ' ' . $e);
+
+            return back()->with(["error" => "School information update failed"]);
+        }
+    }
+
     private function randomFileNameGenerator($length, $extension)
     {
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyz', ceil($length / strlen($x)))), 1, $length) . '.' . $extension;
@@ -75,5 +125,17 @@ class SchoolController extends Controller
     {
         $extension = explode(".", $file);
         return end($extension);
+    }
+
+    private function getSchoolLogo($school_id)
+    {
+        $image = School::where('school_id', $school_id)->first()->only(['school_logo']);
+        if ($image['school_logo']) {
+            $file_name = explode('/', $image['school_logo']);
+            // $image['url'] = asset('storage/schoolLogos/' . $file_name[sizeof($file_name) - 1]);
+            $image['url'] = config('custom.trip_host') . 'storage/schoolLogos/' . $file_name[sizeof($file_name) - 1];
+            return $image['url'];
+        }
+        return;
     }
 }

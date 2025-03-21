@@ -57,6 +57,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/locations/{search?}/{filters?}', [LocationController::class, 'index'])->name('locations.index');
     Route::get('/location/{id}', [LocationController::class, 'view'])->name('location.view');
     Route::get('/locations_autocomplete', [LocationController::class, 'autocomplete'])->name('locations.autocomplete');
+    Route::get('/locations_likes', [LocationController::class, 'myLikes'])->name('locations.likes');
+    Route::put('/location_like/{id}', [LocationController::class, 'liked'])->name('location.liked');
+    Route::put('/location_unlike/{id}', [LocationController::class, 'unliked'])->name('location.unliked');
 
     // billing
     Route::get('/quotations', [QuotationController::class, 'index'])->name('quotation.index');
@@ -97,6 +100,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/account', [SchoolController::class, 'view'])->name('account.view');
+    Route::post('/account/{id}', [SchoolController::class, 'update'])->name('account.update');
 
     Route::get('/terms_of_service', function () {
         return Inertia::render('TermsOfService');
