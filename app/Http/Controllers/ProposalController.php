@@ -8,6 +8,7 @@ use App\Models\Item;
 use App\Models\Location;
 use App\Models\LocationDetail;
 use App\Models\LocationImages;
+use App\Models\Order;
 use App\Models\Proposal;
 use App\Models\ProposalFees;
 use App\Models\ProposalItem;
@@ -315,7 +316,8 @@ class ProposalController extends Controller
         $proposal = Proposal::where('proposal_id', $req->id)->first();
         $proposal = Proposal::where('proposal_id', $req->id)->first();
         $proposal_product = ProposalProduct::where('proposal_id', $req->id)->get();
-        $quotation = Quotation::select(["quotation_amount"])->where('proposal_id', $req->id)->first();
+        // $quotation = Quotation::select(["quotation_amount"])->where('proposal_id', $req->id)->first();
+        $order = Order::where('proposal_id', $req->id)->get();
 
         $school = School::where('user_id', $proposal['user_id'])->first();
         $schoolLogo =
@@ -345,7 +347,7 @@ class ProposalController extends Controller
             'content' => 'This is a dynamically generated PDF using Laravel DomPDF with Inertia.js.',
             'date' => date('d/M/Y', strtotime($proposal['proposal_date'])),
             'products' => $proposal_product,
-            'cost_per_student' => round(($quotation['quotation_amount'] + ($proposal['markup_per_student'] * $proposal['qty_student'])) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
+            'cost_per_student' => round(($order->sum('order_amount') + ($proposal['markup_per_student'] * $proposal['qty_student'])) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
             'schoolLogo' => $schoolLogo,
             'images' => $product_images,
         ];
