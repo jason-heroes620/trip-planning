@@ -114,9 +114,9 @@ class ProposalController extends Controller
         $proposal_item = ProposalItem::leftJoin('item', 'proposal_item.item_id', '=', 'item.item_id')
             ->where('proposal_item.proposal_id', $req->id)->get(["item.item_id", "item_name", "item.uom", "item_qty", "proposal_item.unit_price", "item.sales_tax", "item_type", "item.additional_unit_cost"]);
 
-        $origin = School::where('user_id', $proposal['user_id'])->select(['school_name', 'city', 'google_place_name'])->first();
+        $origin = School::where('user_id', $proposal['user_id'])->select(['school_name', 'city', 'google_location'])->first();
         // $proposal['origin'] = $origin['school_name'] . ', ' . $origin['city'];
-        $proposal['origin'] = $origin['google_place_name'];
+        $proposal['origin'] = $origin['google_location'];
 
 
 
@@ -312,11 +312,9 @@ class ProposalController extends Controller
 
     public function createProposalPdf(Request $req)
     {
-        // $id = '790ea717-fbfd-4fc1-ba20-9c532bbe4076';
         $proposal = Proposal::where('proposal_id', $req->id)->first();
         $proposal = Proposal::where('proposal_id', $req->id)->first();
         $proposal_product = ProposalProduct::where('proposal_id', $req->id)->get();
-        // $quotation = Quotation::select(["quotation_amount"])->where('proposal_id', $req->id)->first();
         $order = Order::where('proposal_id', $req->id)->get();
 
         $school = School::where('user_id', $proposal['user_id'])->first();
