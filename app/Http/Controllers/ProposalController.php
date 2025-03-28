@@ -114,9 +114,9 @@ class ProposalController extends Controller
         $proposal_item = ProposalItem::leftJoin('item', 'proposal_item.item_id', '=', 'item.item_id')
             ->where('proposal_item.proposal_id', $req->id)->get(["item.item_id", "item_name", "item.uom", "item_qty", "proposal_item.unit_price", "item.sales_tax", "item_type", "item.additional_unit_cost"]);
 
-        $origin = School::where('user_id', $proposal['user_id'])->select(['school_name', 'city', 'google_location'])->first();
+        $origin = School::where('user_id', $proposal['user_id'])->select(['school_name', 'city', 'google_place_name'])->first();
         // $proposal['origin'] = $origin['school_name'] . ', ' . $origin['city'];
-        $proposal['origin'] = $origin['google_location'];
+        $proposal['origin'] = $origin['google_place_name'];
 
 
 
