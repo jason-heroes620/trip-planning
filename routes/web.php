@@ -28,7 +28,12 @@ Route::get('/', function () {
 
 Route::get('/storage-link', function () {
     Artisan::call('storage:link');
-    return "All config cleared";
+    return "Storage link created";
+});
+
+Route::get('/config-cache', function () {
+    Artisan::call('config:cache');
+    return "Config cache created";
 });
 
 Route::get('/register', [SchoolController::class, 'create'])->name('school.create');
