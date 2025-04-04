@@ -12,8 +12,7 @@ export default function Edit({
     return (
         <UserLayout>
             <Head title="Profile" />
-
-            <div className="py-12">
+            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-32">
                 <div className="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
                     <div className="flex flex-row items-center gap-10 px-4">
                         <div className="py-2">

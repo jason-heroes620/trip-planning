@@ -70,7 +70,7 @@ class SchoolController extends Controller
     {
         $user = $req->user();
         $school = School::where('user_id', $user->id)->first();
-        $school_logo = $this->getSchoolLogo($school['school_id']);
+        $school_logo = $this->getSchoolLogo($school['school_id']) ?? '';
 
         return Inertia::render('Account/View', compact('school', 'school_logo'));
     }

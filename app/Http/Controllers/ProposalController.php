@@ -345,14 +345,14 @@ class ProposalController extends Controller
             'content' => 'This is a dynamically generated PDF using Laravel DomPDF with Inertia.js.',
             'date' => date('d/M/Y', strtotime($proposal['proposal_date'])),
             'products' => $proposal_product,
-            'cost_per_student' => round(($order->sum('order_amount') + ($proposal['markup_per_student'] * $proposal['qty_student'])) / ($proposal['qty_student'] + $proposal['qty_teacher'])),
+            'cost_per_student' => ceil(($order->sum('order_amount') + ($proposal['markup_per_student'] * $proposal['qty_student'])) / $proposal['qty_student']),
+            'include_student_cost' => $req->input('include_student_cost'),
             'schoolLogo' => $schoolLogo,
             'images' => $product_images,
         ];
 
         $pdf = Pdf::loadView('pdf_invoice', $data)->setPaper('a4', 'potrait');
-        // return $pdf->download('example.pdf'); // or use stream() to view it in the browser
-        return $pdf->download('proposal.pdf'); // or use stream() to view it in the browser
+        return $pdf->download('proposal.pdf');
     }
 
     public function addMarkup(Request $req)

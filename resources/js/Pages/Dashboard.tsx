@@ -138,7 +138,7 @@ export default function Dashboard({
                 <div className="py-4">
                     <span className="font-bold">Upcoming Trips</span>
                     <div className="flex flex-col py-4 md:grid md:grid-cols-4">
-                        {upcoming_trips.length > 0 &&
+                        {upcoming_trips.length > 0 ? (
                             upcoming_trips.map((u: any) => {
                                 return (
                                     <Link
@@ -150,7 +150,7 @@ export default function Dashboard({
                                         className="flex items-center justify-center"
                                     >
                                         <Card
-                                            className={`w-60 border shadow-md`}
+                                            className={`h-50 w-60 border shadow-md`}
                                             key={u.proposal_id}
                                         >
                                             <CardContent className="py-2">
@@ -161,7 +161,7 @@ export default function Dashboard({
                                                     <img
                                                         src={u.image}
                                                         alt=""
-                                                        className="object-contain"
+                                                        className="h-36 w-full object-cover"
                                                     />
                                                 </div>
                                                 <div className="px-2 py-2">
@@ -175,8 +175,8 @@ export default function Dashboard({
                                         </Card>
                                     </Link>
                                 );
-                            })}
-                        {upcoming_trips.length === 0 && (
+                            })
+                        ) : (
                             <div className="px-4 py-2">
                                 <span className="italic">
                                     No upcoming trip at the moment.

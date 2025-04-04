@@ -11,8 +11,6 @@ use App\Models\Proposal;
 use App\Models\ProposalItem;
 use App\Models\ProposalProduct;
 use App\Models\ProposalProductPrice;
-use App\Models\Quotation;
-use App\Models\ProposalDiscount;
 use App\Models\School;
 use Inertia\Inertia;
 use Illuminate\Http\Request;

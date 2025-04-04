@@ -37,7 +37,7 @@
 
         img {
             width: 150px;
-            height: 100px;
+            height: auto;
         }
 
         table {
@@ -86,6 +86,7 @@
         </div>
         <br>
         <p></p>
+        @if ( $include_student_cost === 'true' )
         <div>
             <span><b>Estimated Cost:</b></span>
             <table class="table">
@@ -95,6 +96,7 @@
                 </tr>
             </table>
         </div>
+        @endif
         <br>
         <br>
         <div>

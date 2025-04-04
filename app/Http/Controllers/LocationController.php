@@ -29,11 +29,11 @@ class LocationController extends Controller
         }
 
         // show latest created locations order by date desc
-        $newProducts = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])->where('status', 0)->orderBy('created', 'desc')->take(6)->get();
-        $product_ids = [];
-        foreach ($newProducts as $p) {
-            array_push($product_ids, $p['id']);
-        }
+        // $newProducts = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])->where('status', 0)->orderBy('created', 'desc')->take(6)->get();
+        // $product_ids = [];
+        // foreach ($newProducts as $p) {
+        //     array_push($product_ids, $p['id']);
+        // }
 
         $products = [];
         if ($req->filled('search') || $req->filled('filter')) {
@@ -48,7 +48,7 @@ class LocationController extends Controller
         } else {
             $products = Location::select(['id', 'product_name', 'merchant_id', 'location', 'student_price', 'product_image'])
                 ->where('status', 0)
-                ->whereNotIn('id', $product_ids)
+                // ->whereNotIn('id', $product_ids)
                 ->orderBy('created', 'desc')
                 ->paginate(12);
         }
@@ -98,14 +98,14 @@ class LocationController extends Controller
             $f['url'] = $this->getImage($f['product_image']);
         }
 
-        foreach ($newProducts as $product) {
-            $product['url'] = $this->getImage($product['product_image']);
-        }
+        // foreach ($newProducts as $product) {
+        //     $product['url'] = $this->getImage($product['product_image']);
+        // }
 
         $filters = Filters::where('filter_status', 0)->orderBy('filter_description', 'DESC')->get(["filter_id", "filter_description"]);
 
         return Inertia::render('Locations', [
-            'newProducts' => $newProducts,
+            // 'newProducts' => $newProducts,
             'products' => $products,
             'featured' => $featured,
             'liked' => $product_liked,

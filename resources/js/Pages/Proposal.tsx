@@ -1,4 +1,5 @@
 import AccordionProposalItem from '@/components/AccordionItem';
+import Checkbox from '@/components/Checkbox';
 import InputLabel from '@/components/InputLabel';
 import TextInput from '@/components/TextInput';
 import {
@@ -285,6 +286,7 @@ const ProposalView = ({
     const [markupPerStudent, setMarkupPerStudent] = useState(
         data.markup_per_student ?? 0,
     );
+    const [includeStudentCost, setIncludeStudentCost] = useState(true);
 
     const calculateTotal = (i: any, student: number, teacher: number) => {
         let product = product_prices.reduce(
@@ -430,6 +432,9 @@ const ProposalView = ({
     const handleDownloadProposal = () => {
         axios
             .get(route('proposal.pdf', proposal.proposal_id), {
+                params: {
+                    include_student_cost: includeStudentCost,
+                },
                 responseType: 'blob',
             })
             .then((response) => {
@@ -510,12 +515,52 @@ const ProposalView = ({
                     </div>
                     <div className="flex">
                         {proposal.proposal_status === 3 && (
-                            <Button
-                                variant={'primary'}
-                                onClick={() => handleDownloadProposal()}
-                            >
-                                Download Proposal
-                            </Button>
+                            // <Button
+                            //     variant={'primary'}
+                            //     onClick={() => handleDownloadProposal()}
+                            // >
+                            //     Download Proposal
+                            // </Button>
+
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button variant="primary">
+                                        Donwload Proposal
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Download Proposal
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="flex items-center gap-2">
+                                            <Checkbox
+                                                checked={includeStudentCost}
+                                                onChange={() =>
+                                                    setIncludeStudentCost(
+                                                        !includeStudentCost,
+                                                    )
+                                                }
+                                            />
+                                            <label htmlFor="">
+                                                Include student cost.
+                                            </label>
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Cancel
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={() => {
+                                                handleDownloadProposal();
+                                            }}
+                                        >
+                                            Continue
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         )}
                     </div>
                 </div>
@@ -646,7 +691,9 @@ const ProposalView = ({
                         </div> */}
                         {proposal.proposal_status === 3 && (
                             <div>
-                                <InputLabel>Markup Per Student</InputLabel>
+                                <InputLabel>
+                                    Markup Per Student (optional)
+                                </InputLabel>
                                 <div className="flex flex-row items-center gap-4">
                                     <TextInput
                                         id="additional_cost"
@@ -1144,12 +1191,11 @@ const ProposalView = ({
                         <span>Costing Per Student: </span>
                         <span className="font-bold">
                             {formattedNumber(
-                                Math.round(
+                                Math.ceil(
                                     (total +
                                         markupPerStudent *
                                             proposal.qty_student) /
-                                        (proposal.qty_student +
-                                            proposal.qty_teacher),
+                                        proposal.qty_student,
                                 ),
                             )}
                         </span>

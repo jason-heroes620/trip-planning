@@ -4,7 +4,7 @@ import UserLayout from '@/layout/UserLayout';
 const Profile = ({ auth }: any) => {
     return (
         <UserLayout>
-            <div className="px-4 py-4">
+            <div className="px-6 py-4 md:px-10 lg:px-20 xl:px-32">
                 <div>
                     <span>Profile</span>
                 </div>

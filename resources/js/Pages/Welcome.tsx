@@ -46,7 +46,7 @@ export default function Welcome({
                     <div className="w-full">
                         <main className="">
                             <div className="flex flex-row">
-                                <Card className="w-full rounded-none bg-[#B0CAD4] px-4 py-6">
+                                <Card className="w-full rounded-none bg-[#B0CAD4] px-6 py-6 md:px-12 lg:px-24">
                                     <CardHeader>
                                         <CardTitle className="text-4xl">
                                             Explore the Ultimate
@@ -54,28 +54,39 @@ export default function Welcome({
                                     </CardHeader>
                                     <CardContent>
                                         <div className="flex flex-col justify-start">
-                                            <div className="w-full px-6 md:w-[50%]">
-                                                <span className="text-justify">
-                                                    Unlock the sec rets to
-                                                    seamless school trip
-                                                    planning with our
-                                                    comprehensice self-planning
-                                                    platform. Discover diverse
-                                                    locations and create lasting
-                                                    memories for your students.
-                                                </span>
-                                            </div>
-                                            <div className="w-[50%] px-6 py-4 md:w-full">
-                                                <span>
-                                                    Elevate Your School Trip
-                                                </span>
-                                            </div>
-                                            <div className="w-[50%] px-6">
-                                                <Button className="rounded-2xl bg-[#0E3051] px-6 py-2 text-white hover:cursor-pointer">
-                                                    <Link href={route('login')}>
-                                                        Plan Now
-                                                    </Link>
-                                                </Button>
+                                            <div className="flex w-full flex-col px-6 md:flex-row md:justify-between md:gap-8">
+                                                <div className="md:w-[40%]">
+                                                    <span className="text-justify">
+                                                        Make planning your
+                                                        school trips easier.
+                                                        Save time, explore
+                                                        unique destinations, and
+                                                        create impactful
+                                                        learning experiences for
+                                                        your students. Let’s
+                                                        take your school trips
+                                                        to the next level
+                                                        together!
+                                                    </span>
+                                                    <div className="py-6">
+                                                        <Button className="rounded-2xl bg-[#0E3051] px-6 py-2 text-white hover:cursor-pointer">
+                                                            <Link
+                                                                href={route(
+                                                                    'login',
+                                                                )}
+                                                            >
+                                                                Plan Now
+                                                            </Link>
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                                <div className="flex justify-center py-2 md:w-[50%]">
+                                                    <img
+                                                        src="/img/welcome-2.jpg"
+                                                        alt=""
+                                                        className="rounded-md md:w-[80%]"
+                                                    />
+                                                </div>
                                             </div>
                                         </div>
                                     </CardContent>

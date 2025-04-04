@@ -7,7 +7,7 @@ import { Link } from '@inertiajs/react';
 import { MapPin } from 'lucide-react';
 
 const Locations = ({
-    newProducts,
+    // newProducts,
     products,
     featured,
     liked,
@@ -48,7 +48,7 @@ const Locations = ({
                     <span className="text-lg font-bold">Locations</span>
                 </div>
                 <div className="flex flex-col">
-                    <div className="flex flex-col pb-6">
+                    {/* <div className="flex flex-col pb-6">
                         <div className="py-2">
                             <span className="font-semibold">What's New</span>
                         </div>
@@ -56,7 +56,18 @@ const Locations = ({
                             <ProductCarousel products={newProducts} />
                         </div>
                     </div>
-                    <hr />
+                    <hr /> */}
+                    <div className="flex flex-col pb-6">
+                        <div className="py-2">
+                            <span className="font-semibold">Featured</span>
+                        </div>
+                        <div className="flex justify-center px-2 py-2">
+                            <ProductCarousel products={featured} />
+                        </div>
+                    </div>
+                    <div className="py-4">
+                        <hr />
+                    </div>
                     <div className="w-full flex-1 px-4 py-4 md:px-4 lg:px-10">
                         <div className="flex flex-row md:justify-end">
                             <SearchFilter
@@ -155,21 +166,11 @@ const Locations = ({
                     <div className="py-4">
                         <hr />
                     </div>
-                    <div className="flex flex-col pb-6">
-                        <div className="py-2">
-                            <span className="font-semibold">Featured</span>
-                        </div>
-                        <div className="flex justify-center px-2 py-2">
-                            <ProductCarousel products={featured} />
-                        </div>
-                    </div>
-                    <div className="py-4">
-                        <hr />
-                    </div>
+
                     {liked.length > 0 && (
                         <div className="flex flex-col pb-6">
-                            <div className="fpy-2">
-                                <span className="font-semibold">Likes</span>
+                            <div className="py-2">
+                                <span className="font-semibold">My Likes</span>
                             </div>
                             {like_more && (
                                 <div className="flex justify-end px-6">
