@@ -2,7 +2,7 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "tsc && vite build --mode production",
+        "build-prod": "tsc && vite build --mode production",
         "build-dev": "tsc && vite build --mode development",
         "dev": "vite",
         "lint": "eslint resources/js --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore --fix"

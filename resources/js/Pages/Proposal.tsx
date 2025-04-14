@@ -309,22 +309,19 @@ const ProposalView = ({
                     : parseFloat(p.item_qty) * parseFloat(p.unit_price)),
             0.0,
         );
-
-        let fee = proposal_fees.reduce(
+        let fee: number = proposal_fees.reduce(
             (sum: number, p: any) =>
                 sum +
                 (p.fee_type === 'P'
-                    ? ((product + option) * p.fee_amount) / 100
-                    : p.fee_amount),
+                    ? ((product + option) * parseFloat(p.fee_amount)) / 100
+                    : parseFloat(p.fee_amount)),
             0.0,
         );
 
-        let t =
-            product +
-            option +
-            fee -
-            (proposal.discount_type ? proposal.discount_amount : 0);
-
+        let discount: number = proposal.discount_type
+            ? proposal.discount_amount
+            : 0;
+        let t = product + option + fee - discount;
         setProductTotal(product);
         setOptionTotal(option);
         setFeeTotal(fee);
@@ -1106,7 +1103,8 @@ const ProposalView = ({
                 </div>
                 <div>
                     <span className="text-sm">
-                        * All orders are subject to 10% administration fee.
+                        * All orders are subject to 10% or RM80 administration
+                        fee whichever is higher.
                     </span>
                 </div>
                 <hr />
@@ -1121,8 +1119,11 @@ const ProposalView = ({
                         return (
                             <div className="flex gap-4" key={f.fee_id}>
                                 <span className="text-lg font-bold">
-                                    {f.fee_description} (
-                                    {parseInt(f.fee_amount)}%)
+                                    {f.fee_description}
+                                    {f.fee_type === 'P'
+                                        ? `(
+                                    ${parseInt(f.fee_amount)}%)`
+                                        : ''}
                                 </span>
                                 <span className="text-lg font-bold">
                                     {f.fee_type === 'P'
