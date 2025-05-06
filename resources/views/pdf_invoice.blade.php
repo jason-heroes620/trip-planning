@@ -26,6 +26,7 @@
         }
 
         .content {
+
             padding: 10px 40px 10px 40px;
         }
 
@@ -35,9 +36,16 @@
             font-size: 18px;
         }
 
-        img {
+        .logo {
             width: 150px;
             height: auto;
+        }
+
+        .images {
+            width: 250px;
+            height: auto;
+            padding-right: 8px;
+
         }
 
         table {
@@ -48,13 +56,21 @@
         .justify {
             text-align: justify;
         }
+
+        .images-margin {
+            margin: 20px;
+            padding-top: 40px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 
 <body>
     <div class="content">
 
-        <img src="data:image/png;base64,{{ $schoolLogo }} " alt="">
+        <img src="data:image/png;base64,{{ $schoolLogo }} " alt="" class="logo">
 
         <h2>{{ $title }}</h2>
         <div>
@@ -99,9 +115,10 @@
         @endif
         <br>
         <br>
-        <div>
+
+        <div class="images-margin">
             @foreach ($images as $img)
-            <img src="data:image/png;base64,{{ $img->image }}" alt="">
+            <img src="data:image/png;base64,{{ $img->image }}" alt="" class="images">
             @endforeach
         </div>
     </div>
