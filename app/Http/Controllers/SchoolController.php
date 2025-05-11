@@ -95,7 +95,6 @@ class SchoolController extends Controller
 
             $school_logo = "";
             if ($req->file('school_logo')) {
-                print_r('logo');
                 $school_logo = storage_path('app/public/schoolLogos');
                 $file_name = $this->randomFileNameGenerator(
                     15,
@@ -116,7 +115,7 @@ class SchoolController extends Controller
         }
     }
 
-    private function randomFileNameGenerator($length, $extension)
+    public function randomFileNameGenerator($length, $extension)
     {
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyz', ceil($length / strlen($x)))), 1, $length) . '.' . $extension;
     }
@@ -137,5 +136,32 @@ class SchoolController extends Controller
             return $image['url'];
         }
         return;
+    }
+
+    public function upload_school_logo(Request $req)
+    {
+        try {
+            $school_logo = "";
+            if ($req->hasFile('attachment')) {
+                $file = $req->file('attachment');
+                $school_logo = storage_path('app/public/schoolLogos');
+                $file_name = $this->randomFileNameGenerator(
+                    15,
+                    $this->getFileExtension($file->getClientOriginalName())
+                );
+                $file->move($school_logo, $file_name);
+
+                School::where('school_id', $req->id)->update([
+                    'school_logo' => $school_logo . '/' . $file_name,
+                ]);
+
+                return response()->json(['success' => 'if ' . $file]);
+            }
+
+            return response()->json(['success' => 'att ' . $req->hasFile(' attachment ')]);
+        } catch (Exceptions $e) {
+            Log::error('Error uploading school logo. ' . $e);
+            return response()->json(['failed']);
+        }
     }
 }

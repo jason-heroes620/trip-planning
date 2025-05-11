@@ -89,8 +89,12 @@ const ProposalView = ({
         proposal_status: proposal.proposal_status,
         special_request: proposal.special_request,
         markup_per_student: proposal.markup_per_student,
+        proposal_file: proposal.proposal_file,
     });
 
+    const [proposalFile, setProposalFile] = useState<File>(
+        proposal.proposal_file,
+    );
     const products = proposal_product.map((p: any) => {
         return p.product_id;
     });
@@ -492,6 +496,44 @@ const ProposalView = ({
             });
     };
 
+    const handleMainFileUpload = (e: any) => {
+        const files: File = e.target.files[0];
+        var canUpload = true;
+        files.size > 2097152 ? (canUpload = false) : '';
+        if (canUpload) {
+            setProposalFile(files);
+            // setData('proposal_file', e.target.files[0]);
+        } else {
+            alert('1 or more files exceed the upload limit.');
+        }
+    };
+
+    const handleUpload = (e: any) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('proposal_file', proposalFile);
+        formData.append('proposal_id', proposal.proposal_id);
+        axios
+            .post(route('proposal_file.upload'), formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            })
+            .then((resp) => {
+                if (resp.status === 200) {
+                    setData('proposal_file', proposalFile);
+                    toast({
+                        description: 'File has been uploaded',
+                    });
+                } else {
+                    toast({
+                        variant: 'destructive',
+                        description: 'There was an error uploading your file.',
+                    });
+                }
+            });
+    };
+
     return (
         <UserLayout>
             <div className="px-4 py-4 md:px-10 lg:px-20 xl:px-32">
@@ -626,7 +668,9 @@ const ProposalView = ({
                                             setDate(date);
                                             setData(
                                                 'proposal_date',
-                                                date?.toLocaleDateString(),
+                                                moment(date).format(
+                                                    'YYYY-MM-DD',
+                                                ),
                                             );
                                         }}
                                         disabled={isDateDisabled}
@@ -1100,6 +1144,48 @@ const ProposalView = ({
                         rows={4}
                         disabled={proposal.proposal_status > 1 ? true : false}
                     />
+                </div>
+                <div className="py-4">
+                    <div>
+                        <div className="flex flex-col gap-2">
+                            <InputLabel>
+                                Official School Letter (if applicable)
+                            </InputLabel>
+                            <div className="flex flex-row border px-2 py-2 md:w-1/2">
+                                <input
+                                    type="file"
+                                    multiple={false}
+                                    accept=".pdf"
+                                    onChange={(e) => {
+                                        handleMainFileUpload(e);
+                                    }}
+                                />
+                                <Button onClick={(e) => handleUpload(e)}>
+                                    Upload
+                                </Button>
+                            </div>
+                        </div>
+                        <small>(supported formats .pdf more than 2 MB)</small>
+                    </div>
+                    <div>
+                        {data.proposal_file && (
+                            <div className="flex h-12 w-12 items-center justify-center px-2">
+                                <img
+                                    src={'/img/PDF_file_icon.svg.png'}
+                                    className="w-12 cursor-pointer object-contain"
+                                    onClick={() => {
+                                        window.open(
+                                            `${route('proposal_file.download', {
+                                                id: proposal.proposal_id,
+                                            })}`,
+                                            '_blank',
+                                        );
+                                    }}
+                                    alt="pdf"
+                                />
+                            </div>
+                        )}
+                    </div>
                 </div>
                 <div>
                     <span className="text-sm">

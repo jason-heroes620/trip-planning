@@ -22,7 +22,7 @@ const ProductCarousel = ({ products }: any) => {
             <CarouselContent className="-ml-1">
                 {products.map((p: any) => (
                     <CarouselItem
-                        className="md:basis-1/2 md:pl-6 lg:basis-1/4"
+                        className="md:basis-1/2 md:pl-6 lg:basis-1/3 2xl:basis-1/4"
                         key={p.id}
                     >
                         <Link href={route('location.view', p.id)}>

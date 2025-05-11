@@ -110,7 +110,7 @@ const SearchFilter = ({ filters, search, filter }: any) => {
             id={'scrollHere'}
             className="flex flex-row items-center gap-2"
         >
-            <div className="relative">
+            <div className="relative z-50">
                 <input
                     type="text"
                     value={data.search}

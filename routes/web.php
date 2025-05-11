@@ -86,6 +86,8 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/proposalProduct/add', [ProposalProductController::class, 'addProduct'])->name('proposalProduct.add');
     Route::delete('/proposal_location_delete/{id}', [ProposalProductController::class, 'deleteProduct'])->name('proposal_location.delete');
+    Route::post('/proposal_file_upload', [ProposalController::class, 'uploadProposalFile'])->name('proposal_file.upload');
+    Route::get('/proposal_file_download/{id}', [ProposalController::class, 'downloadProposalFile'])->name('proposal_file.download');
 
     // quotation
     Route::post('/quotation', [QuotationController::class, 'create'])->name('quotation.create');

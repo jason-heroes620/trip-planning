@@ -16,7 +16,11 @@ import { useState } from 'react';
 
 const withNotification = 0;
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
-    const defaultOpen = Cookies.get('sidebar_state') ? true : false;
+    const defaultOpen =
+        Cookies.get('sidebar_state') === 'true' ||
+        Cookies.get('sidebar_state') === undefined
+            ? true
+            : false;
     const [loading, setLoading] = useState(false);
 
     router.on('start', (event) => {

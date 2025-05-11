@@ -27,7 +27,7 @@ import {
 } from 'lucide-react';
 
 export function AppSidebar() {
-    const { state, isMobile } = useSidebar();
+    const { state } = useSidebar();
 
     return (
         <Sidebar side="left" collapsible="icon" variant="sidebar">
@@ -55,9 +55,7 @@ export function AppSidebar() {
                                     <CollapsibleTrigger asChild>
                                         <SidebarMenuButton tooltip={'Trips'}>
                                             <Bus />
-                                            <span className="text-md">
-                                                Trips
-                                            </span>
+                                            <span>Trips</span>
                                             <ChevronDown />
                                         </SidebarMenuButton>
                                     </CollapsibleTrigger>

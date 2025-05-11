@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Events\OrderRequestEvent;
-use App\Models\Fees;
 use App\Models\Item;
 use App\Models\Location;
 use App\Models\LocationDetail;
@@ -19,8 +18,8 @@ use Illuminate\Support\Facades\Exceptions;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Symfony\Component\Uid\UuidV8;
-use App\Models\Quotation;
 use App\Models\ProposalDiscount;
+use App\Models\ProposalFiles;
 use App\Models\ReservedDates;
 use App\Models\School;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -69,8 +68,6 @@ class ProposalController extends Controller
                     $discount = $amount * $proposal_discount['discount_amount'] / 100;
                 }
             }
-
-
             $p['amount'] = $amount - $discount;
         }
 
@@ -118,8 +115,6 @@ class ProposalController extends Controller
         // $proposal['origin'] = $origin['school_name'] . ', ' . $origin['city'];
         $proposal['origin'] = $origin['google_place_name'];
 
-
-
         $amount = 0;
         foreach ($product_prices as $p) {
             $amount += $p['qty'] * $p['unit_price'];
@@ -140,8 +135,9 @@ class ProposalController extends Controller
             }
         }
 
-
         $proposal_fees = ProposalFees::where('proposal_id', $req->id)->get();
+        $proposal_file = ProposalFiles::where('proposal_id', $req->id)->first();
+        $proposal['proposal_file'] = $proposal_file['file_path'] ?? null;
 
         return Inertia::render('Proposal', [
             'proposal' => $proposal,
@@ -408,5 +404,53 @@ class ProposalController extends Controller
         }
 
         return array_unique($reserved);
+    }
+
+    public function uploadProposalFile(Request $req)
+    {
+        try {
+            $user = $req->user();
+            $uid = UuidV8::v4();
+            $fileUtil = new SchoolController();
+            if ($req->hasFile('proposal_file')) {
+                $file = $req->file('proposal_file');
+                $path = storage_path('app/public/proposal_files');
+                $file_name = $fileUtil->randomFileNameGenerator(
+                    15,
+                    $this->getFileExtension($file->getClientOriginalName())
+                );
+                $req->file('proposal_file')->move($path, $file_name);
+
+                ProposalFiles::updateOrCreate([
+                    'proposal_id' => $req->input('proposal_id')
+                ], [
+                    'proposal_file_id' => $uid,
+                    'proposal_id' => $req->input('proposal_id'),
+                    'proposal_file_type' => 'LETTER',
+                    'original_file_name' => $file->getClientOriginalName(),
+                    'file_path' => $path . '/' .  $file_name
+                ]);
+            }
+
+            return response()->json(['success' => 'File uploaded successfully', 'file_path' => $file_name]);
+        } catch (Exceptions $e) {
+            Log::error('Error uploading file: ' . $e);
+            return response()->json(['error' => 'File upload failed'], 500);
+        }
+    }
+
+    public function downloadProposalFile(Request $req)
+    {
+        $file = ProposalFiles::where('proposal_id', $req->id)->first();
+        if ($file) {
+            return response()->download($file['file_path'], $file['original_file_name']);
+        }
+        return response()->json(['error' => 'File not found'], 404);
+    }
+
+    private function getFileExtension($file)
+    {
+        $extension = explode(".", $file);
+        return end($extension);
     }
 }

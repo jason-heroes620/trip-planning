@@ -349,7 +349,7 @@ const View = ({ school, school_logo }: any) => {
                                     />
                                     <small>
                                         (supported formats .png, .jpg. Image
-                                        should not be more than 2 MB)
+                                        should not be more than 1 MB)
                                     </small>
                                 </div>
                             </div>

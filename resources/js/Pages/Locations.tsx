@@ -1,4 +1,6 @@
 import ProductCarousel from '@/components/carousel/productCarousel';
+import BlurHashPlaceholder from '@/components/image/BlurHashPlaceholder';
+import LazyImage from '@/components/image/LazyImage';
 import Pagination from '@/components/pagination';
 import SearchFilter from '@/components/SearchFilter';
 import { Card, CardContent } from '@/components/ui/card';
@@ -77,7 +79,7 @@ const Locations = ({
                             />
                         </div>
                         <div className="py-6">
-                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
                                 {product.length > 0 ? (
                                     product.map((p: any) => {
                                         return (
@@ -91,12 +93,36 @@ const Locations = ({
                                                 <Card className="h-[350px]">
                                                     <CardContent className="flex">
                                                         <div className="flex h-full w-full flex-col">
-                                                            <img
+                                                            {/* <img
                                                                 src={p.url}
                                                                 alt=""
                                                                 className="block max-h-[200px] min-h-[200px] w-full rounded-t-lg object-cover"
                                                                 width="auto"
                                                                 height={'auto'}
+                                                                loading={'lazy'}
+                                                            /> */}
+                                                            <LazyImage
+                                                                src={p.url}
+                                                                placeholder={
+                                                                    p.url ? (
+                                                                        <BlurHashPlaceholder
+                                                                            hash={
+                                                                                p.url
+                                                                            }
+                                                                            width={
+                                                                                16
+                                                                            }
+                                                                            height={
+                                                                                2
+                                                                            }
+                                                                            className="absolute inset-0"
+                                                                        />
+                                                                    ) : null
+                                                                }
+                                                                alt={'img'}
+                                                                width={6}
+                                                                height={3.6}
+                                                                className="rounded-t-lg shadow-md transition-shadow hover:shadow-lg"
                                                             />
 
                                                             <div className="px-4">

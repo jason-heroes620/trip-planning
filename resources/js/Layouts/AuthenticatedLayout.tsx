@@ -180,7 +180,6 @@ export default function Authenticated({
                     </div>
                 </header>
             )}
-
             <main>{children}</main>
         </div>
     );
