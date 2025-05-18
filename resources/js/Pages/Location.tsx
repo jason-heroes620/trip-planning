@@ -9,7 +9,7 @@ import { secondsToHms } from '@/util/secondsToHms';
 import { router, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { Heart, Hourglass, MapPin, UsersRound, Utensils } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import '../../css/style.css';
 
 const Location = () => {
@@ -26,6 +26,13 @@ const Location = () => {
     const { props } = usePage();
     const previousUrl = props.previousUrl || '/';
     const [filled, setFilled] = useState(isLiked);
+
+    useEffect(() => {
+        axios.post('/api/activity-log', {
+            type: 'product_view',
+            details: { product_id: product.id, name: product.product_name },
+        });
+    }, [product]);
 
     const handleLike = () => {
         setFilled(!filled);
